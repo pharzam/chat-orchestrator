@@ -63,7 +63,7 @@ fresh copy of the baseline (no PRDs yet). It is wired into the
 the shape of [`template.md`](template.md), change the linter in the same change** — the two must
 agree. Its self-tests live in [`tests/`](tests/) (sample good and bad PRDs, not
 example content for a new PRD). A project on a specific stack may instead port these
-checks to its `‹test runner›`.
+checks to its `go test`.
 
 ## Index
 

@@ -116,8 +116,8 @@ if [ -f docs/links/link-lint.sh ]; then
 	sh docs/links/link-lint.sh
 fi
 
-# 2. Lint / format — ‹lint command, e.g. a formatter --check plus a linter›
-# ‹your-linter› || exit 1
+# 2. Lint / format — gofmt -l on the tracked Go files except those under vendor/, then go vet ./... (R-TEST-05)
+# out=$({ git ls-files -z -- '*.go' ':!:vendor/**' || printf 'git ls-files failed\0'; } | xargs -0 -r gofmt -l) && test -z "$out" && go vet ./... || exit 1
 
 # 3. Tests, cheap → expensive — run the fast levels here; leave the slow ones to
 #    CI. Fill each ‹…› with your stack's command (see docs/tests/test-levels.md).

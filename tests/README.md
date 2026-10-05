@@ -4,7 +4,7 @@ The home for this project's **product tests** — the tests of your code. It shi
 empty on purpose: the baseline is domain-free with no product, so it has no
 product tests of its own. The project's unit, integration, and
 end-to-end tests go here (or in whatever layout the project's stack expects — this
-directory is the default `‹test directory›`).
+directory is the default `tests`).
 
 ## In plain terms
 

@@ -13,11 +13,11 @@ reproduction detail — it goes in `tasks/<id>.md` and the entry links to it as
 a design doc. (Multi-paragraph entries are prohibited.)
 
 Each task has a stable ID assigned once and never reused or renumbered — an ID
-stays with its task when promoted from Next to Now. Use a `‹task-ID scheme›`: a
+stays with its task when promoted from Next to Now. Use a `T- plus four random lowercase letters or digits`: a
 short, stable token per task. Prefer **random** IDs over a sequential counter — a
 counter forces every session to agree on "the next number", so two people (or
 agents) working in parallel both pick the same one and collide in filenames,
-branches, and PRs. A random suffix needs no coordination. `‹State your exact scheme
+branches, and PRs. A random suffix needs no coordination. `T- plus four random lowercase letters or digits
 here — for example: "T-" plus four characters drawn from 0-9 a-z minus the
 ambiguous i l o u; before using an ID, confirm tasks/<id>.md does not already
 exist."›`

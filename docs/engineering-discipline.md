@@ -31,7 +31,7 @@ on the issue
 [solution-selection standard](#solution-selection) when you select the approach,
 the plan, the tests, or another technical part of the task.
 
-1. **Isolate.** Do the work in a per-task git worktree under `‹worktree dir›/<task>`,
+1. **Isolate.** Do the work in a per-task git worktree under `.worktree/<task>`,
    branched off `origin/main` — see [Starting a task](#starting-a-task). Never
    work on the operator's main worktree.
 
@@ -62,7 +62,7 @@ the plan, the tests, or another technical part of the task.
    [clause-by-clause semantic pass](#reviewing-for-semantic-agreement).
 
 6. **Be honest, keep evidence.** State outcomes plainly and commit run evidence
-   under `‹evidence store›` — see [Honesty and evidence](#honesty-and-evidence).
+   under `runs` — see [Honesty and evidence](#honesty-and-evidence).
    When that evidence comes from a costly action, review the producing code
    *first* — see
    [Review before a costly or irreversible action](#review-before-a-costly-or-irreversible-action).
@@ -449,7 +449,7 @@ correctness of the result that the action exists to produce.
 
 State outcomes plainly. Report failing tests, skipped steps, and inconclusive or
 below-the-bar results as they are — never hidden, never with the goalposts moved.
-Commit the run evidence under `‹evidence store›` so a reader can check the claim
+Commit the run evidence under `runs` so a reader can check the claim
 against the data that produced it.
 
 ## Architecture Decision Records
@@ -509,7 +509,7 @@ customer, or one too small to track requirements, does not need this section and
 This repository's documents form one traceable line, from the customer's words to the test
 that proves them:
 
-    fact (F-NNNN#n) → requirement (REQ/NFR) → guardrail → ADR → task (‹task-ID›) → test
+    fact (F-NNNN#n) → requirement (REQ/NFR) → guardrail → ADR → task (T-xxxx) → test
 
 Each link already has a home — [`facts/`](facts/) holds the fact, [`prd/`](prd/)
 the requirement, [`guardrails.md`](guardrails.md) the pitfall, [`adr/`](adr/) the
@@ -634,7 +634,7 @@ _why_ is not obvious from the summary line alone.
 When a commit implements or closes a [backlog](tasks/backlog.md) task, its ID goes
 immediately after the colon, before the rest of the description:
 `<type>: <ID> <description>`, for example `feat(store): <ID> add SQLite datastore`.
-Give each task a stable ID under your `‹task-ID scheme›`. Commits with no task keep
+Give each task a stable ID under your `T- plus four random lowercase letters or digits`. Commits with no task keep
 the plain `<type>: <description>` form.
 
 ## Testing
@@ -646,7 +646,7 @@ shape allows it. It is the default way of working, not an afterthought bolted on
 once the code already "works". A bug fix's test must fail against the old code and
 pass against the fix — otherwise it is not proof that the bug is gone.
 
-Tests run through `‹test runner›`.
+Tests run through `go test`.
 
 The full testing conventions — the levels, a pattern to write each kind, the
 security, scaling, and Definition-of-Done (DoD) checklists, and the traceability
@@ -662,7 +662,7 @@ tests, defined in [`tests/test-levels.md`](tests/test-levels.md). The cheap leve
 [CI](#continuous-integration). Each level has its own command placeholder
 — `‹unit test command›`, `‹integration test command›`, `‹end-to-end test command›`,
 and `‹security test command›` for the parallel security track — with
-`‹test timeout›` bounding a hanging test and `‹test directory›` naming where the
+`‹test timeout›` bounding a hanging test and `tests` naming where the
 product tests live (the repo-root [`tests/`](../tests/) drop-in).
 
 **Coverage, stated as rules:**
@@ -750,7 +750,7 @@ It pins `core.hooksPath` to the relative `.githooks`. Two hooks ship with the ba
   the three repo-file
   [discipline linters](#testing) — ADR, PRD and link —
   and their fixture self-tests,
-  then the `‹lint›`, the fast [test levels](#testing) (`‹unit test command›`, then
+  then the `format check and go vet`, the fast [test levels](#testing) (`‹unit test command›`, then
   the integration test command), and the security scanner step. In this repository they are comments in
   the hook, so they do not run: see [Which checks run](onboarding-for-engineers.md#which-checks-run). Keep it cheap-first; the full suite — the end-to-end level and the
   full security scan — belongs in [CI](#continuous-integration).
@@ -812,9 +812,9 @@ If you are an agent, every task starts on its own feature branch, checked out in
 its own git worktree — never directly on the operator's main worktree (whatever
 branch it happened to have checked out), and never as uncommitted changes that
 sit on top of someone else's in-progress work. Create the worktree and branch
-together under the repo-local `‹worktree dir›` directory (gitignored), branched
+together under the repo-local `.worktree` directory (gitignored), branched
 off the latest `origin/main`, for example
-`git worktree add ‹worktree dir›/<slug> -b <slug> origin/main`. Do the work
+`git worktree add .worktree/<slug> -b <slug> origin/main`. Do the work
 there, and remove the worktree (`git worktree remove`) once it is merged or
 abandoned. This keeps the main worktree clean and available at all times, and
 lets many tasks (including ones run by agents) proceed at the same time without
@@ -850,7 +850,7 @@ names and leaves the review pointing at a commit that no longer exists.
 
 Before the PR lands, tick the ticket's acceptance-criteria boxes and write the
 task's verdict — the plain statement of what the work found or delivered, backed
-by the evidence under `‹evidence store›`.
+by the evidence under `runs`.
 
 The **same PR that lands a task's work moves it from
 [`tasks/backlog.md`](tasks/backlog.md) to

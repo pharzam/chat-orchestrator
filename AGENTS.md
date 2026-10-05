@@ -107,7 +107,7 @@ command that no document names.
 
 ## Branches, worktrees, commits, and pull requests
 
-Work in a per-task git worktree under `‹worktree dir›/<task>`, branched off
+Work in a per-task git worktree under `.worktree/<task>`, branched off
 `origin/main`, never in the operator's own checkout. Commit at each logical step,
 with a subject that follows Conventional Commits — `<type>: <ID> <description>`
 when it carries a task. Rebase onto the latest `origin/main` and land with a plain
