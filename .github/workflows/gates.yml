@@ -1,0 +1,88 @@
+# The gate jobs of this repository: one job per kind of docs/gates.tsv, each a
+# required check of the default branch. The id and the name of a job are its
+# kind. Each job runs .github/gates.sh with its kind on the head of the pull
+# request; the script reads the kind's row of docs/gates.tsv.
+name: gates
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: static
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tree/v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v5 # https://github.com/actions/setup-go/tree/v5
+        with:
+          go-version-file: go.mod
+      - run: sh .github/gates.sh static
+        env:
+          GATE_BASE: ${{ github.event.pull_request.base.sha }}
+          GATE_HEAD: ${{ github.event.pull_request.head.sha }}
+  layout:
+    name: layout
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tree/v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v5 # https://github.com/actions/setup-go/tree/v5
+        with:
+          go-version-file: go.mod
+      - run: sh .github/gates.sh layout
+        env:
+          GATE_BASE: ${{ github.event.pull_request.base.sha }}
+          GATE_HEAD: ${{ github.event.pull_request.head.sha }}
+  boundary:
+    name: boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tree/v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v5 # https://github.com/actions/setup-go/tree/v5
+        with:
+          go-version-file: go.mod
+      - run: sh .github/gates.sh boundary
+        env:
+          GATE_BASE: ${{ github.event.pull_request.base.sha }}
+          GATE_HEAD: ${{ github.event.pull_request.head.sha }}
+  contract:
+    name: contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tree/v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v5 # https://github.com/actions/setup-go/tree/v5
+        with:
+          go-version-file: go.mod
+      - run: sh .github/gates.sh contract
+        env:
+          GATE_BASE: ${{ github.event.pull_request.base.sha }}
+          GATE_HEAD: ${{ github.event.pull_request.head.sha }}
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tree/v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v5 # https://github.com/actions/setup-go/tree/v5
+        with:
+          go-version-file: go.mod
+      - run: sh .github/gates.sh test
+        env:
+          GATE_BASE: ${{ github.event.pull_request.base.sha }}
+          GATE_HEAD: ${{ github.event.pull_request.head.sha }}
