@@ -1,0 +1,253 @@
+# Continuous integration for the Armature repo itself.
+#
+# This is the ACTIVATED, tailored copy of docs/ci/github-actions-ci.yml. It runs
+# only the jobs that apply to the kit's own repository — the discipline checks,
+# which need no toolchain. The template's lint / tests / security jobs are omitted
+# on purpose: Armature is domain-free and ships no product code, so there is
+# nothing for them to run (the template README says to delete jobs a project does
+# not need). The kit's own "tests" are the discipline checks below.
+#
+# The PR-title and PR-link checks live in their own workflows (pr-title.yml,
+# pr-link.yml) because they run on pull-request events only.
+#
+# CI is the authority for the quality gate. To make these checks block a merge,
+# mark them required on `main` (Settings → Branches → branch protection) — a
+# repo-settings step, not a file here.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+# Least privilege: these jobs only check out and read the repo. A read-only token
+# is all they need, and it is what every step sees.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  adr-lint:
+    name: adr-lint (docs/adr discipline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # #84 — the check that judges this pull request comes from the DEFAULT
+      # BRANCH, not from the pull request. Without this, a branch that replaces a
+      # linter with `exit 0` passes its own required check; replace the runner too
+      # and every required job reports green over a defect. Both were measured.
+      #
+      # The scripts root their scan at their OWN directory (`dirname $0`), so
+      # running the default branch's copy from elsewhere lints the WRONG TREE and
+      # passes in silence — measured, and the reason this restores in place rather
+      # than invoking a second copy where it sits.
+      #
+      # LIMIT, stated rather than implied: a `pull_request` event runs the workflow
+      # file from the pull request, so a branch that edits THIS FILE removes this
+      # step. That is closed by review of `.github/**`, not by anything here.
+      - name: Restore the checks from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          rm -rf .checks-from-default
+          git clone --quiet --depth 1 --branch "$DEFAULT_BRANCH" \
+            "https://github.com/${GITHUB_REPOSITORY}.git" .checks-from-default
+          for f in docs/adr/adr-lint.sh docs/prd/prd-lint.sh \
+                   docs/links/link-lint.sh \
+                   docs/tests/run-discipline-tests.sh \
+                   docs/ci/pr-link-lint.sh docs/ci/review-record-lint.sh; do
+            if [ -f ".checks-from-default/$f" ]; then
+              cp ".checks-from-default/$f" "$f"
+              printf 'restored from %s: %s\n' "$DEFAULT_BRANCH" "$f"
+            else
+              printf 'not on %s, kept as written: %s\n' "$DEFAULT_BRANCH" "$f"
+            fi
+          done
+          rm -rf .checks-from-default
+      - run: sh docs/adr/adr-lint.sh
+
+  prd-lint:
+    name: prd-lint (docs/prd discipline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # #84 — the check that judges this pull request comes from the DEFAULT
+      # BRANCH, not from the pull request. Without this, a branch that replaces a
+      # linter with `exit 0` passes its own required check; replace the runner too
+      # and every required job reports green over a defect. Both were measured.
+      #
+      # The scripts root their scan at their OWN directory (`dirname $0`), so
+      # running the default branch's copy from elsewhere lints the WRONG TREE and
+      # passes in silence — measured, and the reason this restores in place rather
+      # than invoking a second copy where it sits.
+      #
+      # LIMIT, stated rather than implied: a `pull_request` event runs the workflow
+      # file from the pull request, so a branch that edits THIS FILE removes this
+      # step. That is closed by review of `.github/**`, not by anything here.
+      - name: Restore the checks from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          rm -rf .checks-from-default
+          git clone --quiet --depth 1 --branch "$DEFAULT_BRANCH" \
+            "https://github.com/${GITHUB_REPOSITORY}.git" .checks-from-default
+          for f in docs/adr/adr-lint.sh docs/prd/prd-lint.sh \
+                   docs/links/link-lint.sh \
+                   docs/tests/run-discipline-tests.sh \
+                   docs/ci/pr-link-lint.sh docs/ci/review-record-lint.sh; do
+            if [ -f ".checks-from-default/$f" ]; then
+              cp ".checks-from-default/$f" "$f"
+              printf 'restored from %s: %s\n' "$DEFAULT_BRANCH" "$f"
+            else
+              printf 'not on %s, kept as written: %s\n' "$DEFAULT_BRANCH" "$f"
+            fi
+          done
+          rm -rf .checks-from-default
+      - run: sh docs/prd/prd-lint.sh
+
+  discipline-tests:
+    name: discipline-tests (linter fixtures)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # #84 — the check that judges this pull request comes from the DEFAULT
+      # BRANCH, not from the pull request. Without this, a branch that replaces a
+      # linter with `exit 0` passes its own required check; replace the runner too
+      # and every required job reports green over a defect. Both were measured.
+      #
+      # The scripts root their scan at their OWN directory (`dirname $0`), so
+      # running the default branch's copy from elsewhere lints the WRONG TREE and
+      # passes in silence — measured, and the reason this restores in place rather
+      # than invoking a second copy where it sits.
+      #
+      # LIMIT, stated rather than implied: a `pull_request` event runs the workflow
+      # file from the pull request, so a branch that edits THIS FILE removes this
+      # step. That is closed by review of `.github/**`, not by anything here.
+      - name: Restore the checks from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          rm -rf .checks-from-default
+          git clone --quiet --depth 1 --branch "$DEFAULT_BRANCH" \
+            "https://github.com/${GITHUB_REPOSITORY}.git" .checks-from-default
+          for f in docs/adr/adr-lint.sh docs/prd/prd-lint.sh \
+                   docs/links/link-lint.sh \
+                   docs/tests/run-discipline-tests.sh \
+                   docs/ci/pr-link-lint.sh docs/ci/review-record-lint.sh; do
+            if [ -f ".checks-from-default/$f" ]; then
+              cp ".checks-from-default/$f" "$f"
+              printf 'restored from %s: %s\n' "$DEFAULT_BRANCH" "$f"
+            else
+              printf 'not on %s, kept as written: %s\n' "$DEFAULT_BRANCH" "$f"
+            fi
+          done
+          rm -rf .checks-from-default
+      # Runs each discipline linter against its good/bad fixtures. No toolchain.
+      - run: sh docs/tests/run-discipline-tests.sh
+
+  link-lint:
+    name: link-lint (in-tree links and anchors)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # #84 — the check that judges this pull request comes from the DEFAULT
+      # BRANCH, not from the pull request. Without this, a branch that replaces a
+      # linter with `exit 0` passes its own required check; replace the runner too
+      # and every required job reports green over a defect. Both were measured.
+      #
+      # The scripts root their scan at their OWN directory (`dirname $0`), so
+      # running the default branch's copy from elsewhere lints the WRONG TREE and
+      # passes in silence — measured, and the reason this restores in place rather
+      # than invoking a second copy where it sits.
+      #
+      # LIMIT, stated rather than implied: a `pull_request` event runs the workflow
+      # file from the pull request, so a branch that edits THIS FILE removes this
+      # step. That is closed by review of `.github/**`, not by anything here.
+      - name: Restore the checks from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          rm -rf .checks-from-default
+          git clone --quiet --depth 1 --branch "$DEFAULT_BRANCH" \
+            "https://github.com/${GITHUB_REPOSITORY}.git" .checks-from-default
+          for f in docs/adr/adr-lint.sh docs/prd/prd-lint.sh \
+                   docs/links/link-lint.sh \
+                   docs/tests/run-discipline-tests.sh \
+                   docs/ci/pr-link-lint.sh docs/ci/review-record-lint.sh; do
+            if [ -f ".checks-from-default/$f" ]; then
+              cp ".checks-from-default/$f" "$f"
+              printf 'restored from %s: %s\n' "$DEFAULT_BRANCH" "$f"
+            else
+              printf 'not on %s, kept as written: %s\n' "$DEFAULT_BRANCH" "$f"
+            fi
+          done
+          rm -rf .checks-from-default
+      # Resolves every in-tree Markdown link and heading anchor, so a renamed
+      # heading or a moved file goes red rather than leaving a document pointing
+      # at nothing. Its own job for the same reason as the two above -- the
+      # runner is a fixture harness and this check is repo-wide; its fixtures ARE
+      # run there, from docs/links/tests/. It needs no network: external links
+      # are out of scope by design, which is what keeps it offline-runnable.
+      - run: sh docs/links/link-lint.sh
+
+  nested-checkout-check:
+    name: nested-checkout-check (the linters skip a nested checkout)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # #84 — the check that judges this pull request comes from the DEFAULT
+      # BRANCH, not from the pull request. Without this, a branch that replaces a
+      # linter with `exit 0` passes its own required check; replace the runner too
+      # and every required job reports green over a defect. Both were measured.
+      #
+      # The scripts root their scan at their OWN directory (`dirname $0`), so
+      # running the default branch's copy from elsewhere lints the WRONG TREE and
+      # passes in silence — measured, and the reason this restores in place rather
+      # than invoking a second copy where it sits.
+      #
+      # LIMIT, stated rather than implied: a `pull_request` event runs the workflow
+      # file from the pull request, so a branch that edits THIS FILE removes this
+      # step. That is closed by review of `.github/**`, not by anything here.
+      - name: Restore the checks from the default branch
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -eu
+          rm -rf .checks-from-default
+          git clone --quiet --depth 1 --branch "$DEFAULT_BRANCH" \
+            "https://github.com/${GITHUB_REPOSITORY}.git" .checks-from-default
+          for f in docs/adr/adr-lint.sh docs/prd/prd-lint.sh \
+                   docs/links/link-lint.sh \
+                   docs/tests/run-discipline-tests.sh \
+                   docs/ci/pr-link-lint.sh docs/ci/review-record-lint.sh; do
+            if [ -f ".checks-from-default/$f" ]; then
+              cp ".checks-from-default/$f" "$f"
+              printf 'restored from %s: %s\n' "$DEFAULT_BRANCH" "$f"
+            else
+              printf 'not on %s, kept as written: %s\n' "$DEFAULT_BRANCH" "$f"
+            fi
+          done
+          rm -rf .checks-from-default
+      # Builds a throwaway repository that holds a nested checkout, a linked
+      # worktree and a plain directory, and drives link-lint against each. Not a
+      # pre-commit step: it needs `git init` and real commits, past the
+      # reads-only-text bar every hook step meets. It runs here on GNU find, which
+      # is what exercises link-lint's fallback walk; a macOS checkout has BSD find
+      # only.
+      #
+      # Unlike the other checks, this one is deliberately NOT restored from the
+      # default branch (see the loop above). It was rewritten in #145 when
+      # audit-record-lint was removed — main's prior copy hard-required that
+      # now-deleted file — so CI runs this branch's version. The trade is that
+      # main's copy no longer guards it; accepted, since it is non-required and
+      # drives only the restored link-lint.sh.
+      - run: sh docs/tests/nested-checkout-check.sh

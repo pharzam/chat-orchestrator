@@ -1,0 +1,86 @@
+# Continuous integration — GitLab CI (OPTIONAL template).
+#
+# This file is INERT here on purpose: GitLab runs the pipeline from .gitlab-ci.yml
+# at the repo root. To activate it, copy it into place and fill the ‹…›:
+#
+#   cp docs/ci/gitlab-ci.yml .gitlab-ci.yml
+#
+# Then replace every ‹…› with your stack's command. CI is the AUTHORITY for the
+# quality gate — protect your default branch and require the pipeline to pass
+# before merge. The .githooks/ run the same rules locally for fast feedback.
+# Delete any job your project does not need.
+#
+# See docs/engineering-discipline.md §"Continuous integration (optional)".
+
+stages: [check]
+
+# Run on merge requests and on the default branch.
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+adr-lint:
+  stage: check
+  image: alpine:3          # any image with POSIX sh + grep/awk/sed
+  script:
+    - sh docs/adr/adr-lint.sh   # concrete and ready — no toolchain needed
+
+prd-lint:
+  stage: check
+  image: alpine:3          # any image with POSIX sh + grep/awk/sed
+  script:
+    - sh docs/prd/prd-lint.sh   # concrete and ready — no toolchain needed
+
+discipline-tests:          # run each discipline linter against its fixtures
+  stage: check
+  image: alpine:3          # any image with POSIX sh + grep/awk/sed
+  script:
+    - sh docs/tests/run-discipline-tests.sh   # concrete and ready — no toolchain needed
+
+link-lint:                 # every in-tree Markdown link and heading anchor
+  stage: check
+  image: alpine:3          # any image with POSIX sh + grep/awk/sed
+  # Concrete and ready — reads only text, needs no network (external links are
+  # out of scope by design). Keep it whatever else you drop: it is the one check
+  # here that stays useful with no Armature documents at all.
+  script:
+    - sh docs/links/link-lint.sh
+
+mr-link:                   # R1 — the MR description must link an issue
+  stage: check
+  image: alpine:3          # any image with POSIX sh + grep/awk/sed
+  rules:                   # the description exists only on a merge-request pipeline
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    # concrete and ready — reads the MR description GitLab puts in the environment
+    - printf '%s' "$CI_MERGE_REQUEST_DESCRIPTION" | sh docs/ci/pr-link-lint.sh
+
+lint:
+  stage: check
+  image: "‹your toolchain image›"
+  script:
+    - "‹lint command, e.g. a formatter --check plus a linter›"
+
+tests:
+  stage: check
+  image: "‹your toolchain image›"
+  # The test ladder, cheap → expensive (see docs/tests/test-levels.md). The hook
+  # runs the cheap levels; CI runs the whole ladder. Fill each ‹…› for your stack.
+  script:
+    - "‹unit test command›"
+    - "‹integration test command›"
+    - "‹end-to-end test command›"   # long-running — bounded by ‹test timeout›
+
+security:                  # secret, dependency, and static-analysis scans
+  stage: check
+  image: "‹security scanner image›"
+  variables:
+    GIT_DEPTH: 0           # full history, so the scan sees every commit
+  # Each script line takes its own ‹security test command›, or fill all three
+  # with one multi-scan command; ‹security scanner› names the tool (image below).
+  # See docs/tests/security-checklist.md for the checks and pass conditions.
+  script:
+    - "‹security test command›"   # secret scan
+    - "‹security test command›"   # dependency scan
+    - "‹security test command›"   # static analysis

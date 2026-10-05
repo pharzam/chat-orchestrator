@@ -1,0 +1,113 @@
+# Continuous integration — GitHub Actions (OPTIONAL template).
+#
+# This file is INERT here on purpose: GitHub only runs workflows placed under
+# .github/workflows/. To activate it, copy it into place and fill the ‹…›:
+#
+#   mkdir -p .github/workflows
+#   cp docs/ci/github-actions-ci.yml .github/workflows/ci.yml
+#
+# Then replace every ‹…› with your stack's command. CI is the AUTHORITY for the
+# quality gate — make these jobs required checks on your default branch (Settings
+# → Branches → branch protection). The .githooks/ run the same rules locally for
+# fast feedback. Delete any job your project does not need.
+#
+# See docs/engineering-discipline.md §"Continuous integration (optional)".
+
+name: CI
+
+on:
+  pull_request:
+    branches: [ "‹default branch, e.g. main›" ]
+  push:
+    branches: [ "‹default branch, e.g. main›" ]
+
+# Least privilege by default: the discipline jobs only read the repo. Raise this
+# per job (e.g. a job that must comment on a PR needs `pull-requests: write`) —
+# never widen the whole workflow.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  adr-lint:
+    name: adr-lint (docs/adr discipline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Concrete and ready — the ADR linter needs no toolchain.
+      - run: sh docs/adr/adr-lint.sh
+
+  prd-lint:
+    name: prd-lint (docs/prd discipline)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Concrete and ready — the PRD linter needs no toolchain.
+      - run: sh docs/prd/prd-lint.sh
+
+  discipline-tests:
+    name: discipline-tests (linter fixtures)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Concrete and ready — runs each discipline linter against its good/bad
+      # fixtures. No toolchain needed.
+      - run: sh docs/tests/run-discipline-tests.sh
+
+  link-lint:
+    name: link-lint (in-tree links and anchors)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Concrete and ready — it reads only text and needs no network, because
+      # external links are out of scope by design. It resolves your documents'
+      # relative links and heading anchors, so a renamed heading goes red instead
+      # of leaving a reader at a dead link. Keep it whatever else you drop: it is
+      # the one check here that stays useful with no Armature documents at all.
+      - run: sh docs/links/link-lint.sh
+
+  lint:
+    name: lint (‹your linter/formatter›)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # ‹set up your toolchain here›
+      - run: "‹lint command, e.g. a formatter --check plus a linter›"
+
+  tests:
+    name: tests (unit → integration → e2e)
+    runs-on: ubuntu-latest
+    # The test ladder, cheap → expensive. The hook runs the cheap levels; CI runs
+    # the whole ladder. See docs/tests/test-levels.md. Fill each ‹…› for your stack.
+    steps:
+      - uses: actions/checkout@v4
+      # ‹set up your toolchain here›
+      - name: unit
+        run: "‹unit test command›"
+      - name: integration
+        run: "‹integration test command›"
+      - name: end-to-end
+        run: "‹end-to-end test command›"   # long-running — bounded by ‹test timeout›
+
+  security:
+    name: security (‹security scanner›)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # The security track — secret, dependency, and static-analysis scans over the
+    # full history. Each step takes its own ‹security test command›, or fill all
+    # three with one multi-scan command; ‹security scanner› names the tool.
+    # See docs/tests/security-checklist.md for the checks and pass conditions.
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so the scan sees every commit
+      - name: secret scan
+        run: "‹security test command›"   # e.g. a scan for committed credentials
+      - name: dependency scan
+        run: "‹security test command›"   # e.g. a scan for known-vulnerable dependencies
+      - name: static analysis
+        run: "‹security test command›"   # e.g. an insecure-pattern scan without running the code
