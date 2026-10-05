@@ -1,0 +1,27 @@
+pattern	exception	source
+.github/	—	baseline
+.githooks/	—	baseline
+.gitattributes	—	baseline
+AGENTS.md	—	baseline
+CLAUDE.md	—	baseline
+docs/engineering-discipline.md	—	baseline
+docs/issue-workflow.md	—	baseline
+docs/ci/	—	baseline
+docs/tests/	—	baseline
+.githooks/install.sh	—	baseline
+.githooks/tests/install-check.sh	—	baseline
+.githooks/tests/provenance-check.sh	—	baseline
+.github/gates.sh	—	catalog
+docs/adr/adr-lint.sh	—	baseline
+docs/ci/pr-link-lint.sh	—	baseline
+docs/ci/review-record-lint.sh	—	baseline
+docs/links/link-lint.sh	—	baseline
+docs/links/tests/expect-check.sh	—	baseline
+docs/prd/prd-lint.sh	—	baseline
+docs/tests/nested-checkout-check.sh	—	baseline
+docs/tests/run-discipline-tests.sh	—	baseline
+docs/gates.tsv	—	catalog
+docs/gates/coverage-floor.txt	—	catalog
+docs/setup/	—	architecture
+docs/facts/	—	architecture
+docs/guardrails.md	added lines in section 2	baseline

@@ -1,0 +1,19 @@
+check	result	reason
+discipline-tests	pass	—
+pin	pass	—
+kit-history	pass	—
+facts	pass	—
+onboarding	pass	—
+glossary	pass	—
+guardrails	pass	—
+markers	pass	—
+adapted	pass	—
+identity	pass	—
+link-lint	pass	—
+sources	pass	—
+jobs	pass	—
+gate:static	pass	—
+gate:layout	clear	pending: fixture not run
+gate:boundary	clear	pending: fixture not run
+gate:contract	clear	pending: fixture not run
+gate:test	pass	—
