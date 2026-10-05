@@ -25,10 +25,6 @@ exist."›`
 When a Now item is done, move its line to [completed.md](completed.md) — same ID,
 same summary, dated — rather than deleting it or checking it off.
 
-> **Re-sliced toward the adopter (2026-09-07)** — see the archived pivot decision
-> D-0004 (now under `docs/decisions/`). Now is adopter-facing and Next
-> starts with the adopter-proving work. The self-facing tasks the pivot retired are
-> recorded on [#156](https://github.com/pharzam/armature/issues/156).
 
 ## Now
 
@@ -36,14 +32,8 @@ same summary, dated — rather than deleting it or checking it off.
 - **‹ID›** — ‹one-sentence summary› ([‹ADR or doc link›](...); [detail](‹id›.md))
 -->
 
-- **T-7m6s** — Adopter day one: ignore the worktree directory, mark `LICENSE`, pin every floating action reference ([#23](https://github.com/pharzam/armature/issues/23))
 
 ## Next
 
 <!-- Deliberately deferred tasks, same one-line shape. -->
 
-- **#22** — Dogfood the kit on one real product repository — the audit's most important finding, the one slice that cannot land inside this repo ([#22](https://github.com/pharzam/armature/issues/22))
-- **#20** — Define core / standard / full adoption profiles ([#20](https://github.com/pharzam/armature/issues/20))
-- **T-6f3w** — Fix `adr-lint`: check an index row's status against the record it names ([#45](https://github.com/pharzam/armature/issues/45))
-- **T-4x2k** — Self-violation sweep, trimmed: the enforcement table and overlong `completed.md` entries ([#40](https://github.com/pharzam/armature/issues/40))
-- **T-5h8n** — Triage the `NOT_PLANNED` issues the Phase 0 closures did not settle ([#16](https://github.com/pharzam/armature/issues/16))
