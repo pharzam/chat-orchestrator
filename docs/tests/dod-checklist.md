@@ -5,12 +5,12 @@ proves it. This file turns the [test traceability](traceability-template.md)
 table into a gate: it checks that every requirement and every DoD item names a
 row in that table, so "done" means "proven", not "looked right".
 
-> **How to adapt this file.** The rule and the checklist below are the reusable
-> content — keep them. Replace the `‹…›` DoD items in the table with your
+> **How to change this file.** The rule and the checklist below are the reusable
+> content — keep them. Change the DoD items in the table to the
 > project's real Definition of Done, and add or remove rows to match it. The one
-> row **without** `‹…›` markers — semantic agreement — is kit-owned like the rule
-> above it: keep it, because it is the item the kit's own linters hand over by
-> design. Delete this note once your own items are in.
+> row **without** placeholders — semantic agreement — is owned by the baseline like the rule
+> above it: keep it, because it is the item the baseline's own linters hand over by
+> design.
 
 ## In plain terms
 

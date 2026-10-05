@@ -6,9 +6,9 @@ to mean a real bug. This file is the set of rules that keep a suite fast and
 stable as it grows, sitting alongside the [test levels](test-levels.md) — every
 rule below applies within a level and across all of them.
 
-> **How to adapt this file.** The rules are the reusable content — keep them.
-> Fill in `‹test timeout›` with your project's real number, and use the
-> checklist as a gate whenever you review or extend the suite. Delete this note
+> **How to change this file.** The rules are the reusable content — keep them.
+> Set the test timeout to the project's real number, and use the
+> checklist as a gate whenever you review or extend the suite. No other change is needed
 > once you have done that.
 
 ## In plain terms

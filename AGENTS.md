@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Agent context for **Armature**, the engineering-discipline kit. Read this before
+Agent context for **chat-orchestrator**, a Go backend service set up from the [pinned engineering-discipline baseline](docs/setup/armature.pin). Read this before
 you change anything in this repository.
 
 This file is a startup index and summary of how we work here. Where it disagrees
@@ -10,14 +10,16 @@ disagreement is a defect to fix in the same change
 
 ## What this repository is
 
-A domain-free **template**, not a product application. Armature ships the "how we
-work" — a quality gate, guardrails, decision records, a glossary, a
-facts-and-requirements convention, a test section and a task backlog — for an
-adopter to copy onto its own domain. It holds no product code and no product test
-suite, so there is nothing here to build, and no toolchain to install.
+chat-orchestrator is a software product under construction; its problem statement is
+[`docs/facts/problem-statement-brief.md`](docs/facts/problem-statement-brief.md). The discipline
+system is a one-time copy of a baseline, pinned in [`docs/setup/armature.pin`](docs/setup/armature.pin):
+a quality gate, guardrails, decision records, a glossary, a facts-and-requirements convention, a test
+section and a task backlog. The stack is Go. This repository has no product code yet, so there is
+nothing to build until the first task lands some.
 
-Two things catch agents out: the `‹…›` markers are deliberate, and the root
-[`tests/`](tests/) directory is empty on purpose — it is the adopter's drop-in.
+Two things catch agents out: a remaining marker is an open gap listed in
+`docs/setup/open-gaps.tsv`, never a value to guess; and the root
+[`tests/`](tests/) directory holds the product tests, and is empty until the first one is written.
 
 ## How these instructions rank
 
@@ -96,8 +98,12 @@ git diff --check
 
 [`docs/ci/pr-link-lint.sh`](docs/ci/pr-link-lint.sh) and
 [`docs/ci/review-record-lint.sh`](docs/ci/review-record-lint.sh) read forge
-artifacts, so they run in CI only and have no local run. Armature has no product test suite and no
-product toolchain: never invent a build, lint or test command for it.
+artifacts, so they run in CI only and have no local run. This repository has no product code yet.
+The gate script of the product is section 18.1 of the problem statement (`R-TEST-05`). It is not in this
+repository yet, and the gate jobs of the stack (`docs/gates.tsv`) are not that script. Which checks run
+now, and which are inactive, is the table in
+[`docs/onboarding-for-engineers.md`](docs/onboarding-for-engineers.md#which-checks-run). Never invent a
+command that no document names.
 
 ## Branches, worktrees, commits, and pull requests
 
@@ -118,11 +124,11 @@ ones. Any detail belongs in that task's own file, never in either index. The sam
 pull request that lands the work records the line in the completed log, moving it
 from the backlog where the task had one.
 
-## Placeholders and adopter values
+## Placeholders and project values
 
-Every `‹…›` marker is a value only the adopter can supply — the test runner, the
+Every marker is a value only the project can supply — the test runner, the
 evidence store, the task-ID scheme, the worktree directory. Never replace one with
-a guess, never invent an adopter's command, path or number, and never delete a
+a guess, never invent the project's command, path or number, and never delete a
 marker to make a check pass. Search for `‹` to find every one of them.
 
 ## Safety limits
@@ -149,7 +155,7 @@ time, never directly. An architecturally significant decision becomes an
 | [`docs/issue-workflow.md`](docs/issue-workflow.md) | The numbered rules themselves, and the honest table of what a mechanism backs today. |
 | [`docs/guardrails.md`](docs/guardrails.md) | Known pitfalls, pre-registered pass and fail rules, and how a result is validated. |
 | [`docs/glossary.md`](docs/glossary.md) | The shared vocabulary, and the rule that every abbreviation earns an entry. |
-| [`docs/adr/`](docs/adr/) | Architecture decisions that constitute a project, with the context and the consequences of each one. This repository's own past governance decisions are archived under `docs/decisions/`, which an adopter deletes. |
+| [`docs/adr/`](docs/adr/) | Architecture decisions that constitute a project, with the context and the consequences of each one. The baseline's own past governance decisions are archived under `docs/decisions/`, which a project deletes. |
 | [`docs/tests/`](docs/tests/) | The test levels, a pattern for each, and the Definition-of-Done coverage checklist. |
 | [`docs/facts/`](docs/facts/) and [`docs/prd/`](docs/prd/) | Customer facts kept as evidence, and the requirements derived from them. |
 | [`.githooks/`](.githooks/) and [`docs/ci/`](docs/ci/) | What the gate enforces locally, and what CI enforces as the authority. |

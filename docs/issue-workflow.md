@@ -11,11 +11,11 @@ criteria"; this document says how those tickets are opened, scoped, and linked.
 > ordered, test-first steps, and the plan is checked once before building begins.
 > Decisions are written down where the next person — human or agent — can find them.
 
-> **How to adapt this file.** This is a generic policy. The kit is **forge-free**,
-> so an *issue* here means a tracked ticket in whatever forge you use (or none),
+> **How to change this file.** This is a generic policy. The baseline is **forge-free**,
+> so an *issue* here means a tracked ticket in whatever forge is in use (or none),
 > and forge-specific issue/PR templates ship **inert** under [`templates/`](templates/) —
-> copy them into place only when you adopt that forge. Replace each `‹…›` marker
-> (your `‹task-ID scheme›`, your forge's linking keywords if they differ), delete
+> copy them into place only when you adopt that forge. Change each value
+> (the task-ID scheme, the forge's linking keywords if they differ), delete
 > a rule you consciously reject — and record why in an [ADR](adr/) — then delete
 > this note. The decision to work this way is [ADR-0003](adr/0003-adopt-issue-first-workflow.md).
 
@@ -35,7 +35,7 @@ plan, and the decisions live; the code is the answer to it.
 | `Closes #N` (also `Fixes #N`, `Resolves #N`) | Auto-closes issue `N` when the PR merges — use it when the PR fully satisfies the issue. |
 | `Refs #N` (also `Part of #N`) | Links a parent, meta, or multi-part issue **without** closing it. |
 
-**Two namespaces, keep both.** The kit already puts a task ID (`‹task-ID scheme›`)
+**Two namespaces, keep both.** The baseline already puts a task ID (per the project's task-ID scheme)
 in the **commit subject** — see [Commit messages](engineering-discipline.md#commit-messages).
 The **issue reference** (`Closes`/`Refs #N`) lives in the **PR body**. The task ID
 tracks the unit of work locally; the issue number tracks it in the forge. They
@@ -113,7 +113,7 @@ whichever document was wrong.
 
 One issue is **one actionable, demoable goal at a limited scale.** Large work
 becomes a parent issue with child sub-issues, each independently completable. This
-mirrors the kit's [commit-granularity](engineering-discipline.md#commit-granularity)
+mirrors the [commit-granularity](engineering-discipline.md#commit-granularity)
 rule, one level up: a task you cannot demo in one step is really several tasks.
 
 **The tripwire.** "Limited scale" is unenforceable while it is only an adjective,
@@ -232,22 +232,22 @@ is [ADR-0008](adr/0008-require-one-reading-in-decision-driving-text.md).
 
 A rule is only as real as what enforces it. This table is honest about which rules
 a mechanism backs today and which are written-rule-only until you wire a gate. The
-kit already ships the green rows.
+baseline already ships the green rows.
 
 | Concern | Written rule | Local hook | CI | Branch protection | Status |
 | ------- | ------------ | ---------- | -- | ----------------- | ------ |
-| Land only via a PR (never a direct push to the default branch) | R1 | [`pre-push`](../.githooks/pre-push) | — | ‹require a PR before merge› | Hook ships; branch protection is your step — the kit ships [the command](ci/README.md#make-the-checks-required) and runs it on its own repository |
+| Land only via a PR (never a direct push to the default branch) | R1 | [`pre-push`](../.githooks/pre-push) | — | require a PR before merge | Hook ships; branch protection is your step — the baseline ships [the command](ci/README.md#make-the-checks-required) and runs it on its own repository |
 | Conventional Commits | [Commit messages](engineering-discipline.md#commit-messages) | [`commit-msg`](../.githooks/commit-msg) | [`pr-title`](ci/github-actions-pr-title.yml) | — | Enforced |
 | ADR + PRD discipline | R5, [Testing](engineering-discipline.md#testing) | [`pre-commit`](../.githooks/pre-commit) | [`adr-lint`, `prd-lint`](ci/) | — | Enforced |
 | The linters reject bad input (fixtures) | [Testing](engineering-discipline.md#testing) | [`pre-commit`](../.githooks/pre-commit) | [`discipline-tests`](tests/run-discipline-tests.sh) | — | Enforced |
-| A PR links an issue (`Closes`/`Refs #N`) | R1 | — | [`pr-link-lint`](ci/pr-link-lint.sh) | ‹require the check before merge› | Check ships; branch protection is your step — the kit ships [the command](ci/README.md#make-the-checks-required) and runs it on its own repository |
+| A PR links an issue (`Closes`/`Refs #N`) | R1 | — | [`pr-link-lint`](ci/pr-link-lint.sh) | require the check before merge | Check ships; branch protection is your step — the baseline ships [the command](ci/README.md#make-the-checks-required) and runs it on its own repository |
 | Test coverage bar | R8 | — | ‹add a coverage gate› | — | Written rule until wired |
 | Slice + prioritize the plan before building (test-first), reviewed once on the issue | R12 | — | [`review-record-lint`](ci/review-record-lint.sh) | ‹require the check before merge› | The plan and its confirmation must exist and be in order; whether the slicing is *good* is the reviewer-s |
 | Reviewer independence and the review record (ten named fields, the cycle among them) | [Who may review](engineering-discipline.md#who-may-review), [What a round records](engineering-discipline.md#what-a-round-records) | — | [`review-record-lint`](ci/review-record-lint.sh) | ‹require the check before merge› | The record is parsed and its chronology checked; **independence is not** and no mechanism can — see the limits in that script |
 | The stopping protocol: a frozen head, the cycle cap and its non-merge verdict, materiality, and where a revealed defect goes | [Reviewing until findings decay](engineering-discipline.md#reviewing-until-findings-decay) | — | [`review-record-lint`](ci/review-record-lint.sh) | ‹require the check before merge› | The cap is counted from `Cycle` and the verdict matched as a string; materiality and classification stay a reviewer-s judgement |
 | Decision-driving text admits one reading, not two | R13, [One reading, not two](engineering-discipline.md#one-reading-not-two) | — | — | — | Written rule — reviewer judgement; ambiguity is semantic (like independence and materiality), and no deterministic check settles it |
 
-This layers **on top of** the [`tasks/`](tasks/) backlog, it does not replace it:
+This layers **on top of** the [`tasks/`](tasks/) backlog, it does not take its place:
 the issue is the outward ticket, the `‹task-ID scheme›` card in
 [`tasks/backlog.md`](tasks/backlog.md) is the local detail. The gate gains an
 implicit **step 0 — open an issue** before step 1 (Isolate).

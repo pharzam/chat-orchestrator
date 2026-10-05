@@ -7,19 +7,19 @@ it cites the fact it derives from. Layer 1 (the facts) is immutable evidence;
 Layer 2 (the PRD) is where interpretation is allowed — so a reader can always trace
 a requirement back to the customer's exact words.
 
-> **How to adapt this directory.** Keep [`template.md`](template.md), this README,
+> **How to change this directory.** Keep [`template.md`](template.md), this README,
 > and [`prd-lint.sh`](prd-lint.sh) — they are the reusable scaffold. Write your
 > real PRDs beside them as `PRD-NNNN-‹slug›.md`. A project with no external
-> customer, or one too small to need requirement tracking, can delete this whole
+> customer, or one too small to need requirement tracking, can remove the whole
 > directory (and the `prd-lint` steps in the [hooks](../../.githooks/pre-commit)
-> and [CI](../ci/)); nothing else depends on it. Delete this note once your first
+> and [CI](../ci/)); nothing else depends on it. This note applies until the first
 > PRD is in.
 
 ## Adding a new PRD
 
 1. Copy [`template.md`](template.md) to `PRD-NNNN-short-slug.md`, using the next
    sequential number.
-2. Fill in every section. **Cite a fact** (`F-NNNN` or `F-NNNN#n`) for every
+2. Complete every section. **Cite a fact** (`F-NNNN` or `F-NNNN#n`) for every
    requirement — see the convention below.
 3. Give each requirement a stable ID (`REQ-NNN` functional, `NFR-NNN`
    non-functional), assigned once and never reused or renumbered.
@@ -57,12 +57,12 @@ conventions above — filename shape, at least one requirement, unique `REQ`/`NF
 IDs, a resolvable cited fact per requirement, an allowed MoSCoW value, the
 `Won't ⇒ Phase —` rule, and a §12 matrix whose ID set equals the requirement set. It reads only Markdown, so
 `sh docs/prd/prd-lint.sh` runs anywhere with no toolchain, and it is green on a
-fresh kit (no PRDs yet). It is wired into the
+fresh copy of the baseline (no PRDs yet). It is wired into the
 [`pre-commit` hook](../engineering-discipline.md#git-hooks) and
-[CI](../engineering-discipline.md#continuous-integration-optional). **If you change
-this template's shape, change the linter in the same change** — the two must
+[CI](../engineering-discipline.md#continuous-integration). **If you change
+the shape of [`template.md`](template.md), change the linter in the same change** — the two must
 agree. Its self-tests live in [`tests/`](tests/) (sample good and bad PRDs, not
-example content to fill in). A project on a specific stack may instead port these
+example content for a new PRD). A project on a specific stack may instead port these
 checks to its `‹test runner›`.
 
 ## Index

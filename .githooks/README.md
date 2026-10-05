@@ -29,9 +29,9 @@ to run when the resolved path lies outside the tree being committed to; see
 
 ## What each hook does
 
-| Hook | Runs | Adapt? |
+| Hook | Runs | Setup |
 |------|------|--------|
-| [`pre-commit`](pre-commit) | A provenance check on where the hooks came from, then the ADR, PRD and link linters and the discipline self-tests, then your `‹lint›` / test levels (fast subset) / security checks (fast subset). | Fill the `‹…›` steps for your stack. |
+| [`pre-commit`](pre-commit) | A provenance check on where the hooks came from, then the ADR, PRD and link linters and the discipline self-tests. Its lint, test-level and security steps are comments in the file, so they do not run. | A step runs when its line is uncommented, with its command. A value that the setup wrote into a comment does not turn it on; an open command is listed in `docs/setup/open-gaps.tsv`. |
 | [`commit-msg`](commit-msg) | Conventional-Commits check on the subject line. | Ready as-is. |
 | [`pre-push`](pre-push) | Refuses a direct push to `main` — use a branch and a PR instead. | Change the branch name if your default is not `main`. |
 
@@ -45,16 +45,16 @@ until `core.hooksPath` is set. The real, unbypassable lock is your host's
 server-side. Turn that on for every repo; this hook is its local twin, not a
 substitute.
 
-## How to adapt
+## How to change the hooks
 
-1. Open [`pre-commit`](pre-commit) and replace each `‹…›` with your project's
+1. Open [`pre-commit`](pre-commit) and change each step to the project's
    command, then uncomment that line. Delete any step you do not use. Keep the
    steps cheap-first and fast — the full test suite belongs in CI.
 2. [`commit-msg`](commit-msg) is ready to use; widen its type list only if you
    first agree the new type in
    [§"Commit messages"](../docs/engineering-discipline.md#commit-messages).
 
-## Optional: the `pre-commit` framework
+## Alternative: the `pre-commit` framework
 
 For a richer setup — pinned, shared, auto-updating hooks across languages — adopt
 the [`pre-commit`](https://pre-commit.com) framework and drive it from a
