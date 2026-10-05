@@ -14,49 +14,32 @@ Read on 2026-10-05 at 14:53:25Z, without a login:
 
 ## The assertion (test first)
 
-Run from the root of the repository:
+It compares the cells "Blocks a merge" of the two rows of the gate jobs, and the whole paragraph after the
+table, with the expected text. So a text that says the opposite fails. Run it from the root of the
+repository; set `f` to test another copy of the file:
 
 ```sh
-f=docs/onboarding-for-engineers.md; ok=1
-grep -F '| Gate jobs `static` and `test` |' "$f" | grep -Fq 'ruleset 24509051' || { echo "A1 FAIL: the row of static and test does not name the ruleset 24509051"; ok=0; }
-grep -F '| Gate jobs `layout`, `boundary` and `contract` |' "$f" | grep -Fq 'ruleset 24509051' || { echo "A2 FAIL: the row of layout, boundary and contract does not name the ruleset 24509051"; ok=0; }
-p=$(sed -n '/^The ruleset of the setup makes the five gate jobs/,/^$/p' "$f")
-for w in 24509051 2026-10-05 read-back; do printf '%s' "$p" | grep -Fq "$w" || { echo "A3 FAIL: the paragraph after the table does not name: $w"; ok=0; }; done
-grep -Fq 'Only after the ruleset is applied' "$f" && { echo "A4 FAIL: a cell still says: Only after the ruleset is applied"; ok=0; }
-grep -Fq 'Until then, no' "$f" && { echo "A5 FAIL: the paragraph still says: Until then, no check blocks a merge"; ok=0; }
+f=${f:-docs/onboarding-for-engineers.md}; ok=1
+cell() { grep -F "| Gate jobs $1 |" "$f" | awk -F'|' '{ c = $(NF-1); gsub(/^ +| +$/, "", c); print c }'; }
+want_cell='Yes, by the ruleset 24509051 (below)'
+[ "$(cell '`static` and `test`')" = "$want_cell" ] || { echo "A1 FAIL: the cell 'Blocks a merge' of static and test is not: $want_cell"; ok=0; }
+[ "$(cell '`layout`, `boundary` and `contract`')" = "$want_cell" ] || { echo "A2 FAIL: the cell 'Blocks a merge' of layout, boundary and contract is not: $want_cell"; ok=0; }
+want_p='The ruleset of the setup makes the five gate jobs the required checks of `main`, and no other check. It is prepared in `docs/setup/branch-protection.json`, and the setup hands its application on GitHub to the Operator (step S13). The five gate jobs block a merge only after the ruleset is applied on GitHub and a read-back of the ruleset confirms it. The Operator applied it on 2026-10-05 as the ruleset `layup: the default branch` (id 24509051), and a read-back of the rules of `main`, without a login, showed the five required checks. Since then, the five gate jobs block a merge.'
+got_p=$(sed -n '/^The ruleset of the setup makes the five gate jobs/,/^$/p' "$f" | tr '\n' ' ' | sed 's/  */ /g; s/^ //; s/ $//')
+[ "$got_p" = "$want_p" ] || { echo "A3 FAIL: the paragraph after the table is not the expected text"; ok=0; }
 [ "$ok" = 1 ] && echo "assertion: PASS" || { echo "assertion: FAIL"; exit 1; }
 ```
 
-Red, on the base `cec749a92cc31a07d67cbf7bc74b07dcd85e84ee` (2026-10-05T14:53:08Z), before the change:
+| Run | Text | Result |
+| --- | --- | --- |
+| red | the base `cec749a`, before the change | A1, A2 and A3 fail; exit 1 |
+| green | the change | `assertion: PASS`; exit 0 |
+| red | the counterexample of review round 1: the cells say "No; ruleset 24509051", and the paragraph says that the ruleset was not applied and that the jobs do not block a merge | A1, A2 and A3 fail; exit 1 |
 
-```
-A1 FAIL: the row of static and test does not name the ruleset 24509051
-A2 FAIL: the row of layout, boundary and contract does not name the ruleset 24509051
-A3 FAIL: the paragraph after the table does not name: 24509051
-A3 FAIL: the paragraph after the table does not name: 2026-10-05
-A4 FAIL: a cell still says: Only after the ruleset is applied
-A5 FAIL: the paragraph still says: Until then, no check blocks a merge
-assertion: FAIL
-exit 1
-```
-
-Green, on the change (2026-10-05T14:53:25Z):
-
-```
-assertion: PASS
-exit 0
-```
+Review round 1 (on `7f59d87`) found that the first form of the assertion tested words, not the claimed
+state: it passed on that counterexample. This form replaces it (cycle 1).
 
 ## The local checks
 
 The hooks were installed with `sh .githooks/install.sh` (`core.hooksPath` = `.githooks`, resolved per
-working tree). `sh .githooks/pre-commit`, run by hand on the change, exit 0:
-
-```
-adr-lint: OK
-prd-lint: OK
-run-discipline-tests: 81 passed, 0 failed
-link-lint: OK  724 links resolved
-```
-
-`git diff --check`: no finding.
+working tree). `sh .githooks/pre-commit` on the change, exit 0: adr-lint: OK; prd-lint: OK; run-discipline-tests: 81 passed, 0 failed; link-lint: OK  724 links resolved. `git diff --check`: no finding.
