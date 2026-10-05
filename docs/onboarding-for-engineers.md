@@ -291,8 +291,8 @@ passed. Keep this table in step with the files that it names.
 | Conventional Commits on the commit message; no direct push to `main` | `.githooks/commit-msg`, `.githooks/pre-push` | Run, in a clone with the hooks installed. `git push --no-verify` bypasses the second. | No (local) |
 | `adr-lint`, `prd-lint`, `discipline-tests`, `link-lint`, `nested-checkout-check` | `.github/workflows/ci.yml`, on a pull request to `main` and on a push to `main` | Runs | No |
 | `conventional-title`, `pr-link`, `review-record` | `.github/workflows/pr-title.yml`, `pr-link.yml` and `review-record.yml`, on a pull request; `pr-link` runs `docs/ci/pr-link-lint.sh` and `review-record` runs `docs/ci/review-record-lint.sh` | Runs | No |
-| Gate jobs `static` and `test` | `.github/workflows/gates.yml`; the command of each job is a row of `docs/gates.tsv` | Active: each job runs the command of its row on a pull request | Only after the ruleset is applied (below) |
-| Gate jobs `layout`, `boundary` and `contract` | `.github/workflows/gates.yml` | Pending: no command. A change of a Go file fails them; a change of other files leaves them `clear`. | Only after the ruleset is applied (below) |
+| Gate jobs `static` and `test` | `.github/workflows/gates.yml`; the command of each job is a row of `docs/gates.tsv` | Active: each job runs the command of its row on a pull request | Yes, by the ruleset 24509051 (below) |
+| Gate jobs `layout`, `boundary` and `contract` | `.github/workflows/gates.yml` | Pending: no command. A change of a Go file fails them; a change of other files leaves them `clear`. | Yes, by the ruleset 24509051 (below) |
 | The gate script of `R-TEST-05` (format check, build, `go vet`, tests, tests with `-race`, offline) | — | **Not in this repository.** The gate jobs are not that script: `static` checks every Go file of the tree, `vendor/` included, and `test` runs `go test -count=1 ./...` with no race run. | — |
 | A coverage check | — | **Inactive.** The coverage floor is an open gap (`docs/gates/coverage-floor.txt`). | — |
 | The workflow templates of `docs/ci/` (`github-actions-*.yml`, `gitlab-ci.yml`) | `docs/ci/` | **Inert.** No job runs a template. The workflows of this repository are separate files in `.github/workflows/`. The linter scripts of `docs/ci/` are not inert: the workflows run them. | — |
@@ -300,8 +300,10 @@ passed. Keep this table in step with the files that it names.
 The ruleset of the setup makes the five gate jobs the required checks of `main`, and no
 other check. It is prepared in `docs/setup/branch-protection.json`, and the setup hands its
 application on GitHub to the Operator (step S13). The five gate jobs block a merge only after
-the ruleset is applied on GitHub and a read-back of the ruleset confirms it. Until then, no
-check blocks a merge.
+the ruleset is applied on GitHub and a read-back of the ruleset confirms it. The Operator
+applied it on 2026-10-05 as the ruleset `layup: the default branch` (id 24509051), and a
+read-back of the rules of `main`, without a login, showed the five required checks. Since
+then, the five gate jobs block a merge.
 
 ### What to read next, in order
 

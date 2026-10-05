@@ -20,3 +20,4 @@ here directly, in the shape above.
 - **YYYY-MM-DD** — **‹ID›** — ‹one-sentence summary of what the task found or delivered› ([‹link›](...); [detail](‹id›.md))
 -->
 
+- **2026-10-05** — **T-a0rt** — The section "Which checks run" names the applied ruleset 24509051 of `main` ([#2](https://github.com/pharzam/chat-orchestrator/issues/2); [detail](T-a0rt.md))
