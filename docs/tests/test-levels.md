@@ -130,5 +130,5 @@ Fill these once, in your own copy, and every template here inherits them:
 | `‹end-to-end test command›` | Run the E2E level. |
 | `‹security test command›` | Run the security scan step. |
 | `‹test timeout›` | The per-test (or per-suite) time limit before a hang is a failure. |
-| `‹test directory›` | Where product tests live — the root [`tests/`](../../tests/) drop-in, or the convention of the project's stack. |
+| `tests` | Where product tests live — the root [`tests/`](../../tests/) drop-in, or the convention of the project's stack. |
 | `‹security scanner›` | The tool that runs the security checks (secret scan, dependency scan, static analysis). |

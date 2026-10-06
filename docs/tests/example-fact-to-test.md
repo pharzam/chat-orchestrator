@@ -76,7 +76,7 @@ order:
    ([R9](../issue-workflow.md#r9--test-freeze-after-confirmation)), the test is
    frozen: not weakened later to make new code pass.
 
-The test lives under `‹test directory›` and is tagged `unit` so it can run alone.
+The test lives under `tests` and is tagged `unit` so it can run alone.
 
 ## 5. The traceability row (the line, written down)
 
