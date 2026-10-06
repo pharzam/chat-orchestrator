@@ -91,6 +91,8 @@ link-lint: OK  727 links resolved
 exit 0
 ```
 
+The binary of the second setup run (all its steps; evidence 110 to 113 of the pilot): `layup5`, built by go1.27.1 from `006fbeeb4972d3e94da5a3f4600bb946b72a6986` of pharzam/layup (branch `T-evad`), `vcs.modified=true`, SHA-256 `3286c72da748411c10e10cb0ae0b4f447a4deac23c55e623d0a25aec43f5ef60`. Its worktree held one untracked file, and one untracked file sets `vcs.modified=true` (evidence 141 of the pilot). No Go file differs between `006fbee` and the head of `T-evad`. A change of a tracked file at the time of the build is not ruled out.
+
 ## 3. The clause-by-clause pass of the 16 copied paths
 
 Each changed clause of the copy, against its source: the baseline text at `a959655`, the answers on [#1](https://github.com/pharzam/chat-orchestrator/issues/1) (comments 5995217834 and 6010563347), and the prose of the second run that the idea owner approved (pharzam/layup#97, comment 6010634567).
@@ -105,7 +107,7 @@ Each changed clause of the copy, against its source: the baseline text at `a9596
 | `docs/tests/scaling-checklist.md`, `security-checklist.md` | the markers &lsaquo;test timeout&rsaquo;, &lsaquo;security scanner&rsaquo; and &lsaquo;security test command&rsaquo; are back, as gaps | the approved prose; the gap rows | yes |
 | `docs/tests/test-levels.md`, `tests/README.md` | the test directory is filled as `tests` | `M-6f558ed8`, `M-b0381356`, 6010563347 | yes |
 | `docs/setup/open-gaps.tsv` | the rows of the gaps follow the markers above | the record of S10 and S11 on `layup-records-2` | yes |
-| `docs/facts/F-0001-*.md`, `F-0002-*.md`, `docs/adr/0009-*.md`, `docs/facts/README.md`, `docs/setup/facts.sha256`, `docs/setup/armature.pin` | the records and the dates of the second run: 14 answers in, 6 out, the facts numbered again | the exception of O-148 as O-151 scoped it | yes |
+| `docs/facts/F-0001-*.md`, `F-0002-*.md`, `docs/adr/0009-*.md`, `docs/facts/README.md`, `docs/setup/facts.sha256`, `docs/setup/armature.pin` | the records and the dates of the second run: 14 answers in, 6 out, the facts numbered again | the exception of O-148, as O-151 scoped it and O-154 extended it | yes |
 
 The history, the index of facts and the pin, against the real history:
 - **The pin.** `armature.pin` gives the commit `a959655`, the tree `8ffb250` and the date of the second run. The root commit of `main` is `242a205` (2026-10-05, the first run), with the same tree `8ffb250`. The version agrees, and the dates differ by O-151.
@@ -114,4 +116,5 @@ The history, the index of facts and the pin, against the real history:
 
 Notes, not material:
 - `tests/README.md` calls the filled value `tests` "the placeholder".
+- `docs/engineering-discipline.md:22` names the steps of the hook, and the steps of the hook are comments that do not run.
 - The Status cell of the row R1 of `docs/issue-workflow.md` is stale (#3), and this task does not change it.
