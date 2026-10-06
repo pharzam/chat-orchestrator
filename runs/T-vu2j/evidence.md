@@ -1,6 +1,6 @@
 # The evidence of T-vu2j
 
-Task `T-vu2j` ([#6](https://github.com/pharzam/chat-orchestrator/issues/6)): the runs before this file, in their order. A commit cannot hold the result of a check on itself, so the runs of the check on the frozen head, after the close-out and on the merge commit are in `runs/T-evad/tree-equal.txt` of pharzam/layup, and on #6.
+Task `T-vu2j` ([#6](https://github.com/pharzam/chat-orchestrator/issues/6)): the runs before this file, in their order. A commit cannot hold the result of a check on itself, so the runs of the check on the frozen head, after the close-out and on the merge commit will be committed in `runs/T-evad/tree-equal.txt` of pharzam/layup and reported on #6, after each run.
 
 ## 1. Red: the check before the copy
 
@@ -112,7 +112,7 @@ Each changed clause of the copy, against its source: the baseline text at `a9596
 The history, the index of facts and the pin, against the real history:
 - **The pin.** `armature.pin` gives the commit `a959655`, the tree `8ffb250` and the date of the second run. The root commit of `main` is `242a205` (2026-10-05, the first run), with the same tree `8ffb250`. The version agrees, and the dates differ by O-151.
 - **The index of facts.** It gives 2026-10-06 for the three records. The brief keeps its own date (2026-10-04) and its hash (line 2 of `facts.sha256` does not change).
-- **The branches of the setup.** `docs/engineering-discipline.md:20` and `README.md:62` name the branches `layup-setup` and `layup-records`. After the copy, the record of `main` is on `layup-records-2`. By O-152 (pharzam/layup#97, comment 6013939366), the branches follow the text: after the merge, `t7-3.sh` makes `layup-records-1` at `2a339bb`, moves `layup-records` to `8bc105c` and makes `layup-setup` at `e2b402b`. The text does not change.
+- **The branches of the setup.** `docs/engineering-discipline.md:20` and `README.md:62` name the branches `layup-setup` and `layup-records`. The record of the copied tree is on `layup-records-2`. By O-152 (pharzam/layup#97, comment 6013939366), the branches will follow the text: after the merge, `t7-3.sh` will make `layup-records-1` at `2a339bb`, move `layup-records` to `8bc105c` and make `layup-setup` at `e2b402b`. The text does not change.
 
 Notes, not material:
 - `tests/README.md` calls the filled value `tests` "the placeholder".

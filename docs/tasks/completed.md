@@ -20,5 +20,5 @@ here directly, in the shape above.
 - **YYYY-MM-DD** — **‹ID›** — ‹one-sentence summary of what the task found or delivered› ([‹link›](...); [detail](‹id›.md))
 -->
 
-- **2026-10-06** — **T-vu2j** — The tree of the second setup run is on `main`, and the change of `T-a0rt` stays ([#6](https://github.com/pharzam/chat-orchestrator/issues/6); [detail](T-vu2j.md))
+- **2026-10-06** — **T-vu2j** — Takes the tree of the second setup run into `main`, and keeps the change of `T-a0rt` ([#6](https://github.com/pharzam/chat-orchestrator/issues/6); [detail](T-vu2j.md))
 - **2026-10-05** — **T-a0rt** — The section "Which checks run" names the applied ruleset 24509051 of `main` ([#2](https://github.com/pharzam/chat-orchestrator/issues/2); [detail](T-a0rt.md))

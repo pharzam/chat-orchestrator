@@ -1,8 +1,8 @@
 # T-vu2j: take the tree of the second setup run into `main`
 
-Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). The commit `ced82d1` copies the tree of `layup-setup-2`
-(`e2b402b`) into `main`, with the four paths of `T-a0rt` as the base `7d7b387` has them: `port.sh` of the pilot
-(pharzam/layup#97) staged the copy, and the author committed it with the hooks. No text of the copy is written by hand. The evidence is [`runs/T-vu2j/evidence.md`](../../runs/T-vu2j/evidence.md).
+Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). On this branch, the commit `ced82d1` copies the tree of
+`layup-setup-2` (`e2b402b`), with the four paths of `T-a0rt` as the base `7d7b387` has them; the merge of this branch
+will take it into `main`. `port.sh` of the pilot (pharzam/layup#97) staged the copy, and the author committed it with the hooks. No text of the copy is written by hand. The evidence is [`runs/T-vu2j/evidence.md`](../../runs/T-vu2j/evidence.md).
 
 ## Decision notes
 
@@ -14,13 +14,13 @@ Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). The commit `c
   Their record is `setup/record.tsv` at `2a339bb` (`layup-records`, then `layup-records-1` by O-152). From the merge on,
   the immutability rules apply to the versions of the second run.
 - **O-149.** One review round on each frozen head, with the four lenses, inside the cycle cap (2 in the plan review, 3
-  from O-156): a workaround under R4, which two operators approve on #6; #4 is its removal issue.
+  from O-156, 4 from O-157): a workaround under R4, which two operators approve on #6; #4 is its removal issue.
 - **O-150.** The task adds two files of its own: this file and its evidence.
 - **O-152.** `docs/engineering-discipline.md:20` and `README.md:62` name the branches `layup-setup` and `layup-records`.
-  After the merge, `t7-3.sh` makes `layup-records-1` at `2a339bb`, moves `layup-records` to `8bc105c` and makes
+  After the merge, `t7-3.sh` will make `layup-records-1` at `2a339bb`, move `layup-records` to `8bc105c` and make
   `layup-setup` at `e2b402b`, with the Operator's login and authorization, so that the text holds without a change.
-- **O-156** (pharzam/layup#97, comment 6016940589). Round 3 found three material defects at the cycle cap of 2. The
-  Operator raised the cap to 3: one more fix cycle, test first, and round 4.
+- **O-156, O-157** (pharzam/layup#97, comments 6016940589, 6018174925). Rounds 3 and 4 found material defects at the
+  caps of 2 and 3; each time the Operator raised the cap by one, for one more fix cycle, test first, and one round.
 
 **The binary of the second run, and the review of T-evad** (#6, comment 6014917221). The evidence records the binary.
 If the review of T-evad (pharzam/layup#97) changes fixes 1 to 3, a setup run with the merged binary, from the same
