@@ -1,0 +1,6 @@
+kind	state	tool	command	scope	config
+static	active	go	out=$(gofmt -l .) && test -z "$out" && go vet ./...	./*.go	—
+layout	pending	—	—	./*.go	—
+boundary	pending	—	—	./*.go	—
+contract	pending	—	—	./*.go	—
+test	active	go	go test -count=1 ./...	./*.go	docs/gates/coverage-floor.txt
