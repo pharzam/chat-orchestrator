@@ -35,7 +35,8 @@ The author read [`docs/guardrails.md`](../guardrails.md), [ADR-0007](../adr/0007
 [ADR-0009](../adr/0009-pin-the-baseline.md). The pass of the evidence meets "a filled value read as a running check";
 `port.sh` sets and checks a relative `core.hooksPath`; the check failed first, and its tests have mutations. The brief
 and its hash do not change. Stale documents: the pass of the evidence, and O-152. No entry in §2: the lesson of the
-lost markers is in §2 of LAYUP's guardrails, and a reader of this repository does not run that setup.
+lost markers is in §2 of LAYUP's guardrails on LAYUP's branch `T-evad` (commit `52a06eb`; that branch is not merged
+into LAYUP's `main` yet), and a reader of this repository does not run that setup.
 
 ## Verdict
 
