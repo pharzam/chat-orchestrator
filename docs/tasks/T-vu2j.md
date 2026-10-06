@@ -1,8 +1,8 @@
 # T-vu2j: take the tree of the second setup run into `main`
 
-Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). The commit `ced82d1`, made by `port.sh` of the pilot (pharzam/layup#97),
-copies the tree of `layup-setup-2` (`e2b402b`) into `main`, with the four paths of `T-a0rt` as the base `7d7b387` has
-them. No text of the copy is written by hand. The evidence is [`runs/T-vu2j/evidence.md`](../../runs/T-vu2j/evidence.md).
+Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). The commit `ced82d1` copies the tree of `layup-setup-2`
+(`e2b402b`) into `main`, with the four paths of `T-a0rt` as the base `7d7b387` has them: `port.sh` of the pilot
+(pharzam/layup#97) staged the copy, and the author committed it with the hooks. No text of the copy is written by hand. The evidence is [`runs/T-vu2j/evidence.md`](../../runs/T-vu2j/evidence.md).
 
 ## Decision notes
 

@@ -4,7 +4,7 @@ Task `T-vu2j` ([#6](https://github.com/pharzam/chat-orchestrator/issues/6)): the
 
 ## 1. Red: the check before the copy
 
-Both runs read only commits of a fresh clone, before `port.sh` made the worktree and the copy. Both fail, as the plan says: the base lacks the 16 paths of the second run, the two files of the task and its line; `layup-setup-2` drops the change of `T-a0rt`.
+Both runs read only commits of a fresh clone, before `port.sh` made the worktree and the copy. Both fail, as the plan says: the base lacks the second-run versions of 16 paths, the two files of the task and its line; `layup-setup-2` drops the change of `T-a0rt`.
 
 ```
 # tree-equal.sh of pharzam/layup at 22479eb (sha256 562a6b929fb27f84233bddbb4738f81836e3a39f0d914fda22f238025266c753); 2026-10-06T09:03:04Z
