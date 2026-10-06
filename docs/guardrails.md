@@ -5,50 +5,149 @@ This document is the target of gate step 2, "Honor the guardrails", in
 task author must take into account **before** writing code, so the team does not
 re-derive a known trap every time.
 
-It is a generic template. It merges two kinds of guardrail that many projects keep
-in separate files — **decision gates** (pre-registered pass/fail rules) and
-**validation** (how you check you are not fooling yourself). Keep them together or
-split them; the rule is that both exist and both are read before work starts.
-
-> **How to adapt this file.** Replace every `‹…›` marker with your project's own
-> rule. Delete the sections you do not need. Keep the ones you keep short — a
-> guardrail nobody reads is not a guardrail.
+It merges two kinds of guardrail that many projects keep in separate files —
+**decision gates** (pre-registered pass/fail rules) and **validation** (how you check
+you are not fooling yourself). Both exist here, and both are read before work starts.
 
 ## In plain terms
 
-`‹State, in one plain sentence, the single worst mistake this project can make and
-what stops it — for example: "It is easy to build a result that looks great and is
-wrong; the defense is to write the pass/fail numbers down before the experiment
-runs."›`
+The worst mistake this project can make is to say that a conversation is safe, or
+that a paid call did no harm, when the evidence does not show it: a green result that
+hides a skipped test, a retry that repeats a paid call, or a guess in place of a
+value that nobody supplied. What stops it is that every promise has a named test, an
+unknown stays unknown, and the pass/fail numbers are written down before a run.
 
 ## 1. Pre-registered decisions — or the goalposts move
 
 A decision rule chosen **after** seeing the result is a fitted parameter, not a
 rule. Write the pass/fail numbers first, somewhere they cannot be quietly edited.
 
-- **What must be pre-registered:** `‹list the decisions that need a frozen rule —
-  thresholds, acceptance bars, go / no-go criteria›`.
-- **Where the numbers freeze:** `‹where a frozen rule is recorded so it provably
-  predates the result — for example a ticket, an intent record, a committed
-  config›`.
+- **What must be pre-registered:** the pass rule of Gate A (formatting, build,
+  `go vet`, the tests and the race detector, with a missing prerequisite or a skipped
+  mandatory test counted as a failure); the release floors of Gate C (section 19 of the
+  problem statement: at least 80% of the answerable cases answered, at least 95%
+  correct abstentions, 100% valid citations, at least 95% supported claims, at least
+  90% correct intent or action, at least 90% of the conversation facts kept through a
+  summary and 100% of the critical constraints, and at least 95% of the generated text
+  in the requested language); the thresholds of the Decision Model profile (an intent
+  choice is accepted at a top probability of at least 0.70 with a margin of at least
+  0.20; an assessment is `no` at p of 0.20 or less and `yes` at p of 0.80 or more, 0.85
+  for `evidence_sufficient`); the initial engineering defaults (100 active turns, 100
+  waiting requests, a 60-second queue and a 180-second deadline); and, for each task,
+  its Budget maximum and its Cycle cap.
+- **Where the numbers freeze:** the problem statement, a raw fact that never changes
+  (revision 3.0, hashed in `docs/setup/facts.sha256`); the versioned policy profile of
+  each provider and model, for the thresholds (`R-DEC-07`); the traceability file, for
+  the acceptance assertions (`R-TRACE-01`); and the plan-review comment of each issue,
+  for its Budget maximum and its Cycle cap. A threshold or an assertion is not weakened
+  after a failure is seen, unless a reviewed baseline change says so (`R-TRACE-04`).
 - **The bands, not a single line:** prefer **Pass / Investigate / Fail** to a
   single pass line on a noisy measure. Define "Investigate" with a rule written
   before you look — for example, one re-examination whose scope is fixed in
   advance; landing there twice counts as Fail.
 
+### 1.1 The invariants of the problem statement
+
+These six rules bind every solution in this repository. They come from section 1.2 of
+the problem statement, [`facts/problem-statement-brief.md`](facts/problem-statement-brief.md),
+which is frozen: a change needs a new revision of that document, not an edit here. Each
+entry gives the rule with its requirement ID, the trap that breaks it in silence, and the
+check that catches a violation. A check value is a path plus the gate that runs it (`hook`
+or `ci:<job>`), or the words `no check yet`. A script that exists but that no gate runs
+is `no check yet`. This repository has no product code yet, so no check of these rules
+exists yet.
+
+- **Inv-1** — At the default configuration the service allows no more than 100 active
+  turns, and no more than one active turn in each session (`R-INV-01`). A turn is active
+  from the time that its session is eligible and a global slot is assigned to it. It keeps
+  its slot while it waits for dependency capacity and during finalization, until its outcome
+  is resolved (`R-TIME-05`). A request that waits for session or global admission holds no
+  active slot, and an idle session holds none (section 1.2 of the problem statement). Trap: a
+  slot that is released while an active turn waits for a dependency or finalizes, so a 101st
+  turn runs, or two turns of one session run at once.
+  Check: no check yet
+- **Inv-2** — A logical request commits at most one user and assistant pair and one
+  increment of the conversation version (`R-INV-02`). Trap: a retry or a duplicate that
+  passes a check-then-insert race and commits a second turn.
+  Check: no check yet
+- **Inv-3** — A successful chat response is sent only after its complete outcome is durably
+  committed (`R-INV-03`). Trap: a reply written to the client before the commit returns, so
+  a crash leaves a client with an answer that the transcript does not hold.
+  Check: no check yet
+- **Inv-4** — The next turn in a session loads the latest committed conversation state
+  after the turn before it is resolved (`R-INV-04`). Trap: a turn that starts from a stale
+  read while its predecessor is still committing.
+  Check: no check yet
+- **Inv-5** — A failed, cancelled or uncertain attempt does not appear as a completed turn
+  in the transcript (`R-INV-05`). Trap: a partial answer or a half pair that is saved for
+  the sake of a later retry.
+  Check: no check yet
+- **Inv-6** — Cache state, provider conversation handles and process memory are never the
+  authoritative record of a conversation (`R-INV-06`). Trap: a design that works only while
+  a cache or a provider session is warm.
+  Check: no check yet
+
 ## 2. Known pitfalls — the traps specific to this domain
 
-`‹List the failure modes that have actually hurt this project or its field. For
-each: the trap, why it is silent, and the check that catches it. Examples of the
-kind of thing that goes here:›`
+The failure modes that this project has to expect, from the problem statement. For each:
+the trap, why it is silent, and the check that catches it. The acceptance families `A01`
+to `A38` (section 18.2 of the problem statement) are those checks, once they exist.
 
-- ❌ `‹pitfall 1 — e.g. a data / input leak: future or out-of-scope information
-  reaching the code that must not see it›`
-- ❌ `‹pitfall 2 — e.g. a measurement that looks strong for the wrong reason›`
-- ❌ `‹pitfall 3 — e.g. an environment or scale difference between test and
-  production›`
+- ❌ **A reply that outruns its commit.** The handler writes the response, and then the
+  transaction commits, or the commit is lost. It is silent because every test that does not
+  stop the process between the two passes. The check: the atomic-commit and
+  lost-acknowledgement tests (`A09`) and the crash points of `A08`; a response is never
+  built from state that is not yet committed.
+- ❌ **A timeout read as "the call did not happen".** A paid call that timed out may have
+  been accepted by the provider. Treating it as free lets a retry run it again, and the
+  charge doubles. It is silent because the fake that a test uses fails cleanly. The check:
+  the dispatch marker and the state `uncertain` (`R-IDEM-11`, `R-IDEM-12`), tested at each
+  crash point of `A08` and by `A23`.
+- ❌ **A retry against a changed conversation.** Request A1 retries after request A2 has
+  committed, and answers a question in the light of a conversation that has moved. It is
+  silent because the retry succeeds. The check: the retry-version guard (`R-IDEM-06` to
+  `R-IDEM-08`), tested by `A22`.
+- ❌ **A check-then-insert race.** Two copies of one request, two processes, or an admission
+  and a deletion each pass a check, and then both write. It is silent because a
+  single-threaded test never interleaves them. The check: atomic claims and the epoch check
+  inside the transaction (`R-IDEM-03`, `R-WRITER-04`), with the barrier tests of `A04`,
+  `A07`, `A17` and `A18`; use barriers and controlled clocks, not sleeps (`R-TEST-03`).
+- ❌ **Unknown usage turned into zero.** A provider that reports no usage, or a cached input
+  that is counted twice, gives a total that looks exact. It is silent because the sum is a
+  number. The check: `reported`, `estimated` and `unknown` kept apart, and the
+  provider-specific accounting tests (`R-USAGE-02`, `R-USAGE-03`, `A14`).
+- ❌ **An invented value.** A KB endpoint, a price, a model ID, a credential or a limit that
+  nobody supplied, written as if it were real, makes a green test that proves nothing about
+  the real system. It is silent because a fake accepts it. The check: contract closure
+  before Gate A is called complete (`R-CONTRACT-01`, `R-CONTRACT-03`), and a missing input
+  that keeps its gate `blocked` or `unverified` (`A33`).
+- ❌ **A green gate over a skipped test.** A missing compiler, image or module, or a
+  mandatory test that is skipped, ends with exit 0. It is silent because the summary line
+  still says "ok". The check: the offline gate fails on a missing prerequisite, and CI
+  refuses a skipped test that is shown as passed (`R-TEST-05`, `R-TRACE-02`, `A20`).
+- ❌ **A cache hit that changes the answer.** An answer, an authorization decision or a
+  session that works only while a cache is warm. It is silent because tests run with a warm
+  cache. The check: the same turns with a cold cache and after a restart give the same
+  result (`R-CACHE-02`, `A02`, `A13`).
+- ❌ **Untrusted text taken as an instruction.** A KB passage or a user message that says
+  what to do changes a policy, a role or an endpoint. It is silent because a model follows
+  the text politely. The check: `A37`, and the live measure in Gate C; evidence is data
+  (`R-KB-09`).
+- ❌ **A malformed decision read as a doubt.** A missing or invalid output of the Decision
+  Model is acted on as if it were `uncertain`. It is silent because the policy table has a
+  row for `uncertain`. The check: malformed output is `DECISION_INVALID` and no turn is
+  committed (`R-DEC-08`, `R-POLICY-01`), tested by `A10` and `A11`.
+- ❌ **A result that is easy to pass by saying nothing.** `cannot_answer` to every question
+  keeps most safety rules and fails the product. It is silent because the safety tests stay
+  green. The check: the Gate C floors on the answerable cases, counted with their
+  denominators and with errors counted as failures (`R-QUAL-05`).
+- ❌ **A filled value read as a running check.** A command that the setup wrote into a comment, a
+  template or an example does not turn that check on: the file only looks configured. It is silent
+  because nothing fails, and the line reads like a check that runs. The check: the table
+  [Which checks run](onboarding-for-engineers.md#which-checks-run) names each check and its state,
+  and a check that is inactive or open is never reported as passed (`R-TEST-05`, `R-TRACE-02`).
 
-### Writing a lesson back (kit-wide — keep this)
+### Writing a lesson back
 
 A trap caught once should not be re-derived by the next task, so a lesson does not
 stay on the issue that learned it. When a task ends, its author asks whether the task
@@ -57,7 +156,7 @@ new `❌` pitfall — the trap, why it is silent, and the check that catches it 
 same pull request. Gate step 7 asks the question, so the rule is applied rather than
 merely written (see [Keeping documentation current](engineering-discipline.md#keeping-documentation-current)).
 
-This is the one **cross-task** reach the kit adds on purpose.
+This is the one **cross-task** reach that the discipline adds on purpose.
 [R6](issue-workflow.md#r6--agent-to-agent-communication-through-the-issue) and
 [R7](issue-workflow.md#r7--decision-transparency-on-every-action) already keep the
 coordination and the reasoning on the issue, and
@@ -67,13 +166,13 @@ discoverable only by someone who reads #N; §2 is where it reaches issue #N+1.
 
 **The filter — or §2 grows until nobody reads it.** Write back only a trap that would
 **catch the next reader**: a silent failure mode, a check that looked green for the
-wrong reason, a footgun in the kit or the domain. Do **not** write back a one-off with
+wrong reason, a footgun in the baseline or the domain. Do **not** write back a one-off with
 no general lesson, a restatement of a rule that already lives elsewhere, or the
 blow-by-blow of the task — those belong to the issue thread and the commit history.
 Volume is the failure mode here, not absence: a pitfall list nobody finishes reading
 guards nothing.
 
-### Gate pitfalls (kit-wide — keep these)
+### Gate pitfalls
 
 The gate is only as real as the thing that runs it. These traps let it report
 success without having done its job.
@@ -136,10 +235,10 @@ success without having done its job.
   steps. These checks are a control against forgetting, not against an operator
   who edits the check.
 
-### Testing pitfalls (kit-wide — keep these)
+### Testing pitfalls
 
 These traps are not domain-specific: they hurt every project's test suite, so the
-kit ships them filled. Keep them, and add your own above.
+baseline ships them filled. Keep them, and add the project's own above.
 
 - ❌ **Testing after the code.** A test written to fit code that already "works"
   tends to encode the code's bugs as expected behaviour. The check: write the test
@@ -164,7 +263,7 @@ kit ships them filled. Keep them, and add your own above.
   cheap levels fast and cheap-first, push slow ones to CI, and bound each with
   `‹test timeout›` — see [`tests/scaling-checklist.md`](tests/scaling-checklist.md).
 
-### Reference-sweep pitfalls (kit-wide — keep these)
+### Reference-sweep pitfalls
 
 A change that edits references or a rule's wording across the tree has three silent
 failure modes worth keeping.
@@ -191,7 +290,7 @@ failure modes worth keeping.
   strand a *different* reference that named the target only through it. A comment
   reading `section 6 says …` leaned on a nearby `D-0003 section 6` for its antecedent;
   repoint every `D-0003 section 6` and the bare `section 6` is left pointing at a
-  structure only the deleted record holds — wrong on the adopter's tree, and sharing
+  structure only the deleted record holds — wrong on a project's tree, and sharing
   **no token** with the thing you renamed. It is silent because a grep keyed on the
   obvious token (`D-000N`) cannot match a bare `section 6`, so the pre-registered
   check goes green over the survivor. **The check:** grep for the *shapes* a reference
@@ -216,7 +315,7 @@ failure modes worth keeping.
   can go stale, and a **removed** check leaves its name behind as a linter that no longer
   exists — a `link-lint` run stays green, because it resolves a *link*, not a claim. It is
   silent because the sentence still reads well and the count still looks deliberate: the
-  kit once said `three`, `four` and `five` at once, and named an `agent-entry` linter that
+  baseline once said `three`, `four` and `five` at once, and named an `agent-entry` linter that
   had been cut. **The check:** when you add or remove a discipline check, grep the whole
   tree for the check-set enumeration — the old name and each spelled count — and reconcile
   every living mirror in the same change; the immutable ADR and archived decision copies
@@ -230,36 +329,48 @@ expensive ones.
 
 | # | Check | Pass condition | Cost |
 |---|-------|----------------|------|
-| 1 | `‹cheap smoke check›` | `‹what "clean" looks like›` | minutes |
-| 2 | `‹stronger check›` | `‹pass condition›` | `‹cost›` |
-| 3 | `‹end-of-work check›` | `‹pass condition›` | `‹cost›` |
+| 1 | `gofmt -l` on the tracked Go files except those under `vendor/`, `go build ./...` and `go vet ./...` (the gate script, `R-TEST-05`) | exit 0, and `gofmt` lists no file | seconds |
+| 2 | `go test ./...` (unit, contract, store and end-to-end tests, with a local PostgreSQL) | exit 0, no mandatory test skipped | minutes |
+| 3 | `go test -race ./...` | exit 0 | minutes |
+| 4 | Gate B: the live check of the real KB, the pinned Jev profile and a real LLM | evidence recorded; `blocked` or `unverified` when an input is missing | hours, with credentials and paid calls |
+| 5 | Gate C: the quality run, twice, on the frozen labelled set | each floor of section 19 met in each run | hours, with paid calls |
 
-Notes on how to read a failure: `‹which checks catch which class of bug; which are
-cheap enough to wire into CI; which run once per change of a given kind›`.
+Notes on how to read a failure: rows 1 to 3 are the offline gate (Gate A), the required gate
+of `R-TEST-05`, and a failure there is a defect in the change. The script of that gate is not in
+this repository yet, and the gate jobs of the Go stack in `docs/gates.tsv` are not that script.
+Rows 4 and 5 need credentials and paid calls, so they run once for each release
+profile, and again when a decision model, a threshold, a core prompt, a summary policy or
+a generation model changes (`R-QUAL-08`); a `blocked` or `unverified` result is reported as
+such, never as a pass (`R-TRACE-03`).
 
 **The automated gate is this validation layer, mechanized.** The cheap, always-on
-checks — the [discipline linters](engineering-discipline.md#testing) the kit
+checks — the [discipline linters](engineering-discipline.md#testing) the baseline
 ships (ADR, PRD and link) and their
 [fixture self-tests](engineering-discipline.md#testing), the
 [test levels](engineering-discipline.md#testing), lint, a security
 scan, and the [commit-format](engineering-discipline.md#commit-messages)
 check — run in the [`pre-commit` hook](engineering-discipline.md#git-hooks) for
-fast local feedback and in [CI](engineering-discipline.md#continuous-integration-optional)
+fast local feedback and in [CI](engineering-discipline.md#continuous-integration)
 as the authority. Treat those checks as pre-registered pass/fail rules under
 section 1: they predate any single result and are not edited to make a change
 pass. Wire the "cheap enough to wire into CI" checks from the table above into
-both layers.
+both layers. In this repository the lint, test-level and security steps of the hook are comments
+and do not run, and the gate jobs of CI are those of the Go stack, not the gate script of
+`R-TEST-05`; [Which checks run](onboarding-for-engineers.md#which-checks-run) lists what runs now.
 
 ## 4. Mechanics
 
 - **Frozen rules do not get edited.** Changing a guardrail after it is set means a
   new version with a written reason, the old one preserved. Legitimate reasons
   exist (a bug in the measure); silent edits do not.
-- **This document holds the structure; `‹your record of record›` holds the frozen
-  values.** When real values exist, mirror them here as history, after the fact,
-  never as the primary copy.
+- **This document holds the structure; the problem statement holds the frozen values.**
+  The raw file [`facts/problem-statement-brief.md`](facts/problem-statement-brief.md) and its
+  hash in `docs/setup/facts.sha256` are the primary copy; the numbers mirrored here are
+  history, after the fact, never the primary copy.
 
 ## Sources
 
-`‹Link the references that justify your thresholds and checks, so a later reader
-can see they are not arbitrary.›`
+The thresholds and the checks come from the problem statement,
+[`facts/problem-statement-brief.md`](facts/problem-statement-brief.md): sections 18 to 21 give the
+gates and the acceptance, and section 22 lists the technical sources (the RFCs, the TypeSafe AI,
+PostgreSQL, Go and provider documentation) that it cites for protocol and platform facts.
