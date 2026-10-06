@@ -5,9 +5,9 @@ a real seam**, per the
 [integration level](test-levels.md#2-integration-tests). This is the pattern to
 copy for each new one.
 
-> **How to adapt this file.** Copy [the skeleton](#fill-in-skeleton) below for
-> every new integration test, replacing each `‹…›` with the real names, setup,
-> and command. Keep the pattern's rules; delete this note once your first real
+> **How to use this file.** Copy [the skeleton](#fill-in-skeleton) below for
+> every new integration test, and set each field of the copy to the real names, setup,
+> and command. Keep the pattern's rules; each real
 > test is written from it.
 
 ## In plain terms

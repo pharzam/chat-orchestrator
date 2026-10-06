@@ -2,21 +2,21 @@
 
 The format that ties one **test** back to the thing it proves — a requirement, a
 guardrail, or an Architecture Decision Record (ADR). It is the last link in the
-kit's traceability line, the point where "the customer asked for it" becomes "a
+traceability line, the point where "the customer asked for it" becomes "a
 test proves it":
 
     fact (F-NNNN#n) → requirement (REQ/NFR) → guardrail → ADR → task (‹task-ID›) → test
 
 The [PRD traceability matrix](../prd/README.md) already writes this whole line for
-one requirement. This template is the test-side view of the same link: fill one
+one requirement. This file is the test-side view of the same link: fill one
 row per test so a reader can go from any test to the reason it exists, and from
 any requirement to the test that covers it.
 
-> **How to adapt this file.** Copy the table below into your test suite's docs (or
-> keep it here and grow it), one row per test. Replace every `‹…›` cell. Keep a
+> **How to use this file.** Copy the table below into your test suite's docs (or
+> keep it here and grow it), one row per test. Write a real value in every cell. Keep a
 > row's IDs (`REQ`/`NFR`, `F-NNNN`, `‹task-ID›`) identical to the ones in the
 > [PRD matrix](../prd/README.md) and [`facts/`](../facts/), so the two never
-> drift. Delete this note once your first real rows are in.
+> drift.
 
 ## In plain terms
 

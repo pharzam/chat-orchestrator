@@ -10,10 +10,10 @@ The check that keeps the documents' own navigation honest.
 
 ## Why it exists
 
-Armature's product **is** its documents, and they are a web of relative links and
+The baseline's product **is** its documents, and they are a web of relative links and
 heading anchors. Rename a heading and every anchor pointing at it dies silently:
 the page still renders, the link still looks like a link, and a reader following
-it lands nowhere. Nothing in the kit caught that until this check.
+it lands nowhere. Nothing in the baseline caught that until this check.
 
 The gap was found the honest way. A review
 noticed that a "311 links resolve" claim had been cited beside the committed
@@ -59,7 +59,7 @@ not this script.
 - **External `http(s)` links.** Checking them needs the network, which would cost
   the offline property every [discipline test](../tests/test-levels.md#discipline-tests)
   depends on. A rotted external link is not caught here.
-- **Placeholders** — `‹…›` adopter markers, `<…>` shapes, and the ADR template's
+- **Placeholders** — markers written with single angle quotation marks, `<…>` shapes, and the ADR template's
   `NNNN-…` form. Flagging one would push an author to "fix" a template by
   inventing a filename, which is the placeholder-integrity failure
   [`AGENTS.md`](../../AGENTS.md) warns about.
@@ -103,7 +103,7 @@ whole `[…](…)`: a whole-link match consumes the inner link and advances past
 outer destination, which is a silent false green on the badge idiom.
 
 The plain CommonMark angle destination `[x](<target.md>)` is a real link: its
-wrapper is stripped and the path resolves. An adopter marker only *opens* with `<`,
+wrapper is stripped and the path resolves. A placeholder only *opens* with `<`,
 as in `<id>.md`, and closes it somewhere after — `is_placeholder()` tells the two
 apart on that trailing text, so a real angle link is never skipped as a placeholder
 and `[detail](<id>.md)` is still skipped as one. Beyond the wrapper strip a
@@ -154,7 +154,7 @@ change excluded the repository root from the walk.
    target is the first blank-delimited word after the colon, so `[TODO]: fixme`
    reports a broken link to `fixme`, and `[TODO]: revisit this later` reports one
    to `revisit` — loud in both cases, and the direction is safe. CommonMark itself
-   allows nothing after the destination and its optional title (§4.7, example 209),
+   allows nothing after the destination and its title, if it has one (§4.7, example 209),
    so a line carrying prose after the target is a paragraph on the forge, not the
    definition this reads it as; the label it appears to define therefore counts
    toward `L6` when it should not. No such line exists in the tree.
@@ -192,7 +192,7 @@ still look green there. [`tests/expect-check.sh`](tests/expect-check.sh) closes
 that for this suite, and fails if it finds no case to check.
 
 That is the pitfall
-[`guardrails.md`](../guardrails.md#gate-pitfalls-kit-wide--keep-these) names — a
+[`guardrails.md`](../guardrails.md#gate-pitfalls) names — a
 harness that compares only exit codes — which is why a close-out that turns on a
 specific assertion id pastes this script's output beside the runner's.
 

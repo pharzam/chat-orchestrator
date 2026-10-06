@@ -1,14 +1,16 @@
-<h1><img src="assets/armature-logo.jpg" alt="Armature logo: a low-poly human figure rendered as a wireframe armature, ringed by the kit's icons — a shield, documents, a book, a person, and a checklist." width="48" align="middle"> Armature</h1>
+# chat-orchestrator
 
-*The engineering-discipline kit.*
+*Persistent, knowledge-grounded conversations with decision models.*
 
-> A domain-free scaffold for running a new software project with discipline — the
-> "how we work," ready to compose onto any domain.
+> A Go backend service that keeps durable conversations, answers from an external
+> knowledge base, and bounds its waiting work and its paid calls.
 
-**What this is.** This repository is a generic **template**, not a product. It gives
-a new project a ready-made engineering-discipline system — a quality gate,
-guardrails, ADRs, a glossary, a customer-facts convention, and a task backlog — that
-you adapt to your domain and grow over time.
+**What this is.** `pharzam/chat-orchestrator` is a software project under
+construction. The product is defined by its problem statement,
+[`docs/facts/problem-statement-brief.md`](docs/facts/problem-statement-brief.md)
+(document PSB-CHAT-001, revision 3.0). The repository has no service code yet. It has
+an engineering-discipline system — a quality gate, guardrails, decision records, a
+glossary, a facts convention and a task backlog — and the gates of a Go project.
 
 ## Start here
 
@@ -27,74 +29,46 @@ you adapt to your domain and grow over time.
 
 | Piece | What it holds |
 |-------|---------------|
-| [`AGENTS.md`](AGENTS.md) | The agent entry point: the quality gate, the checks, a pointer to the R1–R13 rules, and which document is authoritative for each — in under 1,500 words. |
+| [`AGENTS.md`](AGENTS.md) | The agent entry point: the quality gate, the checks, a pointer to the R1–R13 rules, and which document is authoritative for each. |
 | [`CLAUDE.md`](CLAUDE.md) | One line, `@AGENTS.md`, so Claude Code loads the same guide. No second copy to drift. |
 | [`docs/agents/`](docs/agents/) | What the entry points are and what they may not become ([ADR-0004](docs/adr/0004-ship-agent-entry-points.md)). |
 | [`docs/onboarding-for-engineers.md`](docs/onboarding-for-engineers.md) | The first door: the problem statement and a domain crash course. |
 | [`docs/engineering-discipline.md`](docs/engineering-discipline.md) | The quality gate, the reusable solution-selection standard, and every working practice. |
 | [`docs/issue-workflow.md`](docs/issue-workflow.md) | The issue-first workflow (R1–R13): the ticket policy the gate assumes. |
 | [`docs/glossary.md`](docs/glossary.md) | The shared vocabulary the other docs assume. |
-| [`docs/guardrails.md`](docs/guardrails.md) | Known pitfalls, pre-registered pass/fail rules, and validation. |
-| [`docs/adr/`](docs/adr/) | Architecture Decision Records that constitute a project — the *why* behind structural choices — plus [`adr-lint.sh`](docs/adr/adr-lint.sh), the discipline test that keeps them honest. This repository's own past governance decisions are archived under `docs/decisions/`, which an adopter deletes. |
-| [`docs/facts/`](docs/facts/) | Raw customer facts kept as immutable evidence, and the citation convention that derives requirements from them. |
+| [`docs/guardrails.md`](docs/guardrails.md) | Known pitfalls, the invariants of the problem statement, pre-registered pass/fail rules, and validation. |
+| [`docs/adr/`](docs/adr/) | Architecture Decision Records — the *why* behind structural choices — plus [`adr-lint.sh`](docs/adr/adr-lint.sh), the discipline test that keeps them honest. |
+| [`docs/facts/`](docs/facts/) | The problem statement and the setup answers, kept as immutable facts. |
 | [`docs/prd/`](docs/prd/) | Product Requirements Documents derived from the facts, plus [`prd-lint.sh`](docs/prd/prd-lint.sh), the discipline test that keeps them honest. |
-| [`docs/tests/`](docs/tests/) | The testing conventions — the test levels, a pattern per level, the security, scaling, and Definition-of-Done checklists, and test-to-requirement traceability — plus [`run-discipline-tests.sh`](docs/tests/run-discipline-tests.sh), which tests the kit's own linters against fixtures. |
-| [`tests/`](tests/) | The repo-root drop-in where an adopter's product tests live. Empty in the kit (it has no product), kept in git by a `.gitkeep`. |
+| [`docs/tests/`](docs/tests/) | The testing conventions — the test levels, a pattern per level, the security, scaling, and Definition-of-Done checklists, and test-to-requirement traceability. |
+| [`tests/`](tests/) | The repo-root directory for the product tests. It is empty until the first test is written. |
 | [`docs/tasks/`](docs/tasks/) | The task index — [`backlog.md`](docs/tasks/backlog.md) and [`completed.md`](docs/tasks/completed.md). |
-| [`.githooks/`](.githooks/) | Git hooks that enforce the cheap gate locally — a commit-message check and a pre-commit runner. Install with `sh .githooks/install.sh`. |
-| [`.gitattributes`](.gitattributes) | **Copy this one.** It keeps the kit's scripts and hooks at line-feed endings, without which none of them runs on a Windows checkout, and pins the handful of fixtures whose Windows endings *are* the assertion. Leave it behind and the gate is either unrunnable or quietly testing nothing. |
-| [`docs/ci/`](docs/ci/) | Optional CI templates (GitHub Actions and GitLab CI) that run the same gate on every PR. Inert until you copy one into place. |
-| [`docs/templates/`](docs/templates/) | Optional, inert GitHub/GitLab issue and PR templates that embody the issue-first workflow. Inert until you copy them into place. |
+| [`docs/setup/`](docs/setup/) | The pin of the baseline ([`armature.pin`](docs/setup/armature.pin)), the list of the hashes of the facts, the protection of the default branch, and the open gaps. |
+| [`.githooks/`](.githooks/) | Git hooks that enforce the cheap gate locally: a commit-message check, and a pre-commit runner of the discipline linters. Its lint, test and security steps are comments and do not run. Install with `sh .githooks/install.sh`. |
+| [`.gitattributes`](.gitattributes) | It keeps the scripts and hooks at line-feed endings, without which none of them runs on a Windows checkout, and pins the handful of fixtures whose bytes must not change. |
+| [`docs/ci/`](docs/ci/) | The workflow templates of the baseline (GitHub Actions and GitLab CI), which are inert, and the linter scripts `pr-link-lint.sh` and `review-record-lint.sh`, which the workflows of this repository run. |
+| `.github/workflows/` | The CI jobs of this repository: the jobs of the baseline, and one job for each gate kind of the Go stack. |
+| `go.mod`, `docs/gates.tsv` | The Go module of the product, and the list of its gate kinds. |
+| [`docs/templates/`](docs/templates/) | Inert GitHub/GitLab issue and pull-request files that embody the issue-first workflow. |
 
-## Using it as a template
+## How this repository was set up
 
-This kit is a **scaffold to compose onto a new domain.** Every document is generic:
-it ships with `‹…›` markers for the values only you can supply, and a "How to adapt"
-note you delete once the real content is in. The kit itself stays domain-free, so the
-same discipline drops onto any project — you add the domain, not the process.
+This repository was set up from a pinned engineering-discipline baseline by
+`layup setup`. [`docs/setup/armature.pin`](docs/setup/armature.pin) holds the source of the
+baseline and the commit that it was copied from, and
+[ADR-0009](docs/adr/0009-pin-the-baseline.md) records the pin. Each step of the setup
+that changes the tree is one commit with the message `chore: setup <step>`. The
+record of each step, and the source of each value that the setup wrote, is on the
+orphan branch `layup-records`, in `setup/record.tsv`. The gate of this repository runs
+without the tool that made it.
 
-To stand up a new project:
+## Working here
 
-1. **Start with a clean history.** Your project is a *new* repository, not a fork
-   of the kit — it must not keep Armature's git history or remote. Two paths give
-   you that for free: click **Use this template** on GitHub, or run
-   `npx degit pharzam/armature my-project`. If you already cloned, detach by hand —
-   deleting `.git` clears Armature's history and its remote in one move:
-
-   ```bash
-   rm -rf .git            # drop Armature's history and remote
-   git init && git add -A
-   git commit -m "chore: initialize from Armature kit"
-   git remote add origin git@github.com:you/my-project.git
-   ```
-
-   The scaffold is a one-time copy, not a dependency: your project keeps no link
-   back to Armature — no `upstream` remote, no fork relationship. Adopt any later
-   kit improvements by hand, if and when you want them.
-2. Follow **[How to adapt this kit](docs/engineering-discipline.md#how-to-adapt-this-kit)** —
-   set the project-wide values (test runner, evidence store, task-ID scheme, worktree
-   directory) and fill the sibling documents.
-3. **Turn on enforcement.** Install the git hooks by running
-   `sh .githooks/install.sh` (it pins `core.hooksPath` to the relative `.githooks`),
-   fill their `‹…›` steps, and — if you use
-   GitHub or GitLab — activate CI by copying a template from
-   [`docs/ci/`](docs/ci/) into place. This makes the quality gate self-enforcing;
-   the [ADR](docs/adr/adr-lint.sh) and [PRD](docs/prd/prd-lint.sh) linters and their
-   [fixture self-tests](docs/tests/run-discipline-tests.sh) run green out of the
-   box.
-4. Search for `‹` to find everything still unfilled; delete every "How to adapt" note
-   when the real content is in.
-5. Grow it — each new practice gets its own short section, with a fuller reference
-   document where one earns its place.
-
-## About the name
-
-**Armature** — say it *AR-mə-chər* (`/ˈɑːr.mə.tʃər/`), three syllables: *ar·ma·ture*.
-In sculpture, an armature is the internal wire-and-metal frame a figure is built
-around: the skeleton holds the shape, and the clay goes on top. This kit is that
-skeleton for a software project — it holds the engineering discipline, and your
-domain is the clay you add.
-
-The word traces to Latin *armatura*, "armor, equipment," from *armare* "to arm"
-(from *arma*, "weapons, tools") — the same root as *arm* and *armor*. An armature is
-the frame that gives a thing its strength.
+Every change starts from an issue and lands through a pull request that links it. The
+ruleset of the setup makes the gate jobs of the Go stack the required checks of the default
+branch; they block a merge only after the ruleset is applied on GitHub and a read-back
+confirms it. The baseline's own jobs run on each pull request and do not block a merge.
+[Which checks run](docs/onboarding-for-engineers.md#which-checks-run) lists every check and
+says which ones are inactive. The product rules are in
+the problem statement, and the first work is to close its open contracts and to build
+the modules that do not depend on them (`R-CONTRACT-01`).

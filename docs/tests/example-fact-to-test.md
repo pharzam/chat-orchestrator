@@ -1,9 +1,9 @@
 # Worked example — from a fact to a test
 
-One concrete walk down the kit's traceability line, so the abstract chain in
+One concrete walk down the traceability line, so the abstract chain in
 [`traceability-template.md`](traceability-template.md) has a filled example beside
 it. It follows a single requirement from the customer's words all the way to the
-test that proves it, using only Armature conventions.
+test that proves it, using only the baseline's conventions.
 
     fact (F-0001#1) → requirement (REQ-001) → guardrail → ADR → task (T-ab12) → test
 
@@ -11,11 +11,11 @@ This example needs no architecturally-significant decision, so the **ADR** link 
 empty (`—`, as the [row at the end](#5-the-traceability-row-the-line-written-down)
 shows); every other link is filled.
 
-> **How to adapt this file.** This is an **illustrative** example — the "order"
-> domain below is a stand-in, not part of the kit. Replace it with one real line
+> **How to change this file.** This is an **illustrative** example — the "order"
+> domain below is a stand-in, not part of the baseline. Replace it with one real line
 > from your own project once you have a fact and a requirement, or simply delete
 > this file. It names no test runner: the test's command stays the `‹unit test
-> command›` placeholder throughout. Delete this note if you keep and adapt the
+> command›` placeholder throughout the
 > file.
 
 ## In plain terms

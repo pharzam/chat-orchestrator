@@ -1,9 +1,9 @@
 # Engineering Discipline
 
 This document lists the engineering practices required on a project. It is a
-domain-free starter kit. This folder is self-contained: the main document links
+domain-free set of rules from the baseline. This folder is self-contained: the main document links
 to sibling documents in the same folder, and each sibling is itself a template
-you fill for your project. Adapt the kit, then grow it over time — each new
+that the project tailors to its own needs. Grow this document over time — each new
 practice gets its own short section below, with a link to the fuller reference
 where one exists.
 
@@ -15,98 +15,11 @@ This document is the project's *how*. For the *what and why* — the problem the
 project solves — see the
 [Problem statement](onboarding-for-engineers.md#1-problem-statement).
 
-## How to adapt this kit
+## How this project was set up
 
-**Before you fill anything, start from a clean history.** Your project is a *new*
-repository, not a fork of the kit — do not keep Armature's git history or remote.
-Use GitHub's *Use this template*, or detach by hand: delete `.git`, run `git init`,
-commit, and add your own remote. Then work through the steps below.
+This repository was set up from the baseline by `layup setup`. The baseline is pinned at one commit in [`setup/armature.pin`](setup/armature.pin), and [ADR-0009](adr/0009-pin-the-baseline.md) records the pin. The steps of the setup that change the tree are commits on the branch `layup-setup`, and the first commit of the branch `layup-records` holds the record of each step and of the source of each value. The rules in this document are the baseline's rules at that pin, changed only where the setup records the change with its evidence.
 
-Four things need doing, then delete this section. The first three add your
-input; the fourth removes the kit's own history.
-
-**1. Fill the sibling documents.** Each is a generic template with its own
-"How to adapt" notes:
-
-- [`guardrails.md`](guardrails.md) — your known-pitfall, decision, and validation
-  rules. Referenced by gate step 2.
-- [`adr/`](adr/) — your Architecture Decision Records. Start at
-  [`adr/README.md`](adr/README.md); copy [`adr/template.md`](adr/template.md) for
-  each new record.
-- [`facts/`](facts/) — the facts documents you collect from a customer, stored
-  as-is. Skip this if your project has no external customer. Start at
-  [`facts/README.md`](facts/README.md); copy [`facts/template.md`](facts/template.md)
-  for each new record.
-- [`prd/`](prd/) — your Product Requirements Documents, derived from the facts.
-  Skip this if your project tracks no requirements. Start at
-  [`prd/README.md`](prd/README.md); copy [`prd/template.md`](prd/template.md) for
-  each new record.
-- [`tests/`](tests/) — your testing conventions: the levels, a pattern per level,
-  the security, scaling, and DoD checklists, and the traceability that ties a test
-  to a requirement. Start at [`tests/README.md`](tests/README.md); the product
-  tests themselves go in the repo-root [`tests/`](../tests/) drop-in.
-- [`glossary.md`](glossary.md) — your shared-vocabulary document.
-- [`onboarding-for-engineers.md`](onboarding-for-engineers.md) — the first
-  document a new engineer reads.
-- [`tasks/backlog.md`](tasks/backlog.md) and
-  [`tasks/completed.md`](tasks/completed.md) — your task index. Keep both files and
-  fill them with your own tasks in place of the kit's; step 4 clears the kit's
-  completed-log history and deletes its `T-*.md` detail files.
-- [`issue-workflow.md`](issue-workflow.md) — the issue-first rules (R1–R13), the
-  ticket policy the gate assumes.
-- [`templates/`](templates/) — inert forge issue/PR templates; copy into place
-  only if you adopt that forge.
-
-**2. Replace the `‹…›` markers.** These are the per-project values with no file
-of their own:
-
-- `‹test runner›` — how tests run in your stack (the command and any rule, for
-  example "no external test framework"); the per-level commands
-  (`‹unit test command›`, `‹integration test command›`, …) are defined in
-  [`tests/test-levels.md`](tests/test-levels.md).
-- `‹evidence store›` — where you commit run outputs, logs, or results (for
-  example `runs/` or `artifacts/`).
-- `‹task-ID scheme›` — how you tag a task (for example `T-` plus four random
-  characters).
-- `‹worktree dir›` — your per-task isolation directory (for example `.worktree/`).
-
-**3. Turn on enforcement.** The gate below is only as real as what enforces it.
-Wire in the two enforcement layers so a violation is caught automatically, not by
-memory:
-
-- **Install the git hooks** — run `sh .githooks/install.sh` once per clone. It pins
-  `core.hooksPath` to the relative `.githooks` — and **that path must stay
-  relative**: `.git/config` is shared by every worktree, so an absolute value binds
-  them all to one checkout's hooks. This turns
-  on [`.githooks/`](../.githooks/): the `commit-msg` hook checks
-  [commit format](#commit-messages), and the `pre-commit` hook runs the three
-  repo-file [discipline linters](#testing) — ADR, PRD and link — and the discipline
-  self-tests, plus the fast gate you fill in. See [Git hooks](#git-hooks).
-- **Fill the hook and CI `‹…›` steps** for your stack — `‹lint›`, the test-level
-  commands from [`tests/test-levels.md`](tests/test-levels.md)
-  (`‹unit test command›`, `‹integration test command›`, `‹end-to-end test command›`),
-  and the `‹security scanner›` scan — then, if you use GitHub or GitLab, **activate
-  CI** by copying
-  the matching template from [`docs/ci/`](ci/) into place — see
-  [Continuous integration](#continuous-integration-optional). CI is optional but
-  recommended; it is the authority the hooks give you fast feedback against.
-- **Confirm the discipline linters run** — `sh docs/adr/adr-lint.sh` should print
-  `adr-lint: OK` and `sh docs/prd/prd-lint.sh` should print `prd-lint: OK`. Both ship
-  wired into the hook and the CI templates.
-
-**4. Clear this repository's own history.** Detaching from git (above) drops the
-commit log, but these files are the kit's *content* — a fresh `git init` keeps
-them. They record how Armature itself was built, not your project, so remove them
-by hand:
-
-- Delete `docs/decisions/` — the kit's own Architecture Decision Records, archived
-  out of the constitution so [`adr/`](adr/) ships only the records you adopt. No
-  adopter-facing rule links into it, so your live rules stay green without it.
-- Delete `docs/audit/` — the independent assessment of *this* repository, not a
-  document your project reuses.
-- Clear the kit's own entries from `docs/tasks/completed.md` — keep the file, it is
-  your task index (step 1) — and delete the kit's `docs/tasks/T-*.md` detail files,
-  each wholly one kit task's record. Then log your own.
+The values of this repository that have no file of their own: `‹test runner›`, how tests run, with the commands of the test levels (`‹unit test command›`, `‹integration test command›`, …) in [`tests/test-levels.md`](tests/test-levels.md); `‹evidence store›`, where the outputs of a run are kept; `‹task-ID scheme›`, how a task is tagged; and `‹worktree dir›`, the directory of the worktree of a task. The steps of the hook and of CI: `‹lint›`, the commands of the test levels (`‹unit test command›`, `‹integration test command›`, `‹end-to-end test command›`), and the `‹security scanner›` scan.
 
 ## Working a task under the quality gate
 
@@ -228,9 +141,9 @@ repeats it. Model tiering begins only **after** that criterion has been applied 
 the work is known to need a model; it never overturns the preference, and a
 deterministic check still outranks a model of any tier.
 
-Where a model is warranted, route by **tier**. Which concrete models fill each tier
-is the adopter's to set — `‹name your reasoning-tier models›` and
-`‹name your execution-tier models›`; the kit names none.
+Where a model is warranted, route by **tier**. Which concrete models serve each tier
+is the project's to set — `‹name your reasoning-tier models›` and
+`‹name your execution-tier models›`; the baseline names none.
 
 | Tier | Class of model | Owns the gate steps that … |
 | ---- | -------------- | -------------------------- |
@@ -241,14 +154,14 @@ Two bounds keep the routing from weakening a rule that already holds:
 
 - **Independence wins where it meets routing.** Routing says which tier *executes* a
   step. The [Model independence level](#who-may-review) says a reviewer's model
-  *differs from the author's* — for high-risk work, where the adopter has a second
+  *differs from the author's* — for high-risk work, where the project has a second
   model. Where the two meet, independence wins: a reviewer never drops to the
   author's model to satisfy routing. Routing extends model choice from review to the
   whole gate; it does not weaken the one place model choice already bit.
-- **An adopter with one tier records the limit.** A single model cannot route. That
-  is a limit of the adopter, not a failure of the gate: run the work on the tier you
+- **A project with one tier records the limit.** A single model cannot route. That
+  is a limit of the project, not a failure of the gate: run the work on the tier you
   have, and name the tier you could not reach — the same answer
-  [Who may review](#who-may-review) gives when an adopter runs out of independence
+  [Who may review](#who-may-review) gives when a project runs out of independence
   levels. A limit recorded can be judged; a limit implied cannot.
 
 A deterministic check still outranks any reviewer and any tier alike: tiering is
@@ -264,8 +177,8 @@ whose body links that issue (`Closes`/`Refs #N`), while the task ID stays in the
 commit subject, so the two namespaces coexist. The full rules — R1–R13, and the
 honest table of what is enforced where — live in
 [`issue-workflow.md`](issue-workflow.md); the decision is
-[ADR-0003](adr/0003-adopt-issue-first-workflow.md). The kit is forge-free, so an
-"issue" is a ticket in whatever forge you use, and forge-specific issue/PR
+[ADR-0003](adr/0003-adopt-issue-first-workflow.md). The baseline is forge-free, so an
+"issue" is a ticket in whatever forge is in use, and forge-specific issue/PR
 templates ship inert under [`templates/`](templates/).
 
 ## Reviewing until findings decay
@@ -342,7 +255,7 @@ protocol that bounds the rounds is:
   successor does not take. Where it takes them all, it alone is the split. The
   stopped branch does not run a further cycle.
 - **Material has a test.** A finding is material when it changes an exit code,
-  an assertion, a behaviour on an adopter's tree, a claim in the tree, or a
+  an assertion, a behaviour on a project's tree, a claim in the tree, or a
   Definition-of-Done item. Wording, style and layout are not. A claim in the
   tree counts only when a reader could act on it and the change makes it false
   or leaves it false; a sentence that changed and still holds is wording. Each
@@ -394,7 +307,7 @@ Independence has four levels. A review claims only the ones it actually had:
 | **Context** | A fresh session whose brief is the issue's problem statement, the acceptance criteria, the source documents and the diff — and **not** the author's reasoning or any earlier round's verdict. | Every review |
 | **Method** | A different lens and a different prompt from the round before it. | Every round after the first |
 | **Execution** | A separate run with its own record on the issue. | Every review |
-| **Model** | A different model, or a different provider. | High-risk work — a governance change, a change to the checks themselves, or anything feeding a [costly or irreversible action](#review-before-a-costly-or-irreversible-action) — **where the adopter has a second model to reach for** |
+| **Model** | A different model, or a different provider. | High-risk work — a governance change, a change to the checks themselves, or anything feeding a [costly or irreversible action](#review-before-a-costly-or-irreversible-action) — **where the project has a second model to reach for** |
 
 Two agents given the same prompt, the same context and the same model are not two
 reviewers. They are one reviewer run twice, and they share every blind spot. The
@@ -418,9 +331,9 @@ thread carries everything this is a discipline, not a mechanism: a reviewer can
 always scroll, and an honest record says what it was handed rather than what it
 was meant to avoid.
 
-**Where the adopter runs out of levels, the ladder stops and the record says so.**
+**Where the project runs out of levels, the ladder stops and the record says so.**
 A one-person team with one model cannot reach model independence, and cannot put a
-second human operator on top of a tie. That is a limit of the adopter, not a
+second human operator on top of a tie. That is a limit of the project, not a
 failure of the review: claim the levels you had, name the ones you could not
 reach, and let a later reader weigh the distance. A limit recorded can be judged;
 a limit implied cannot.
@@ -479,8 +392,8 @@ alone: the reviewer that raised it agrees, or, where the author raised it, an
 independent reviewer does. Without that assent the classification is **recorded
 as disputed** on the issue.
 
-Where an adopter has no second operator to escalate to, the disagreement is
-**recorded unresolved** and carried into the adopter's own decision process. An
+Where a project has no second operator to escalate to, the disagreement is
+**recorded unresolved** and carried into the project's own decision process. An
 unresolved disagreement written down is a known risk; one silently broken by the
 author is a false green. Either state is a finding still open: the last round on
 that branch returns `not mergeable, findings recorded`, and the issue a disputed
@@ -488,7 +401,7 @@ finding might owe is not owed until the dispute resolves.
 
 ## Reviewing for semantic agreement
 
-A check that passes proves what it measures, not what you meant. The kit's own
+A check that passes proves what it measures, not what you meant. The baseline's own
 linters are explicit about this: they prove presence, structure and coverage over
 the documents they read, and none of them proves that a compressed sentence means
 what its source paragraph means.
@@ -550,7 +463,7 @@ index live in [`adr/README.md`](adr/README.md), and
 [`adr/0001-record-architecture-decisions.md`](adr/0001-record-architecture-decisions.md)
 records the decision to use ADRs. `adr/` holds only records that constitute a
 project; this repository's own past governance decisions are archived under
-`docs/decisions/`, which an adopter deletes.
+`docs/decisions/`, which setup removes.
 
 A decision is "architecturally significant" if it affects structure,
 non-functional characteristics, dependencies, interfaces, or construction
@@ -576,7 +489,7 @@ fact it came from by its `F-NNNN` ID. Layer 2 is where the
 and where interpretation is allowed. Layer 1 is where interpretation is forbidden.
 
 The mechanics — the ID scheme, how to add a document, how to correct one — are in
-[`facts/README.md`](facts/README.md). A project with no external customer skips
+[`facts/README.md`](facts/README.md). A project with no external customer does not need
 this section and the [`facts/`](facts/) directory entirely.
 
 ## Product requirements
@@ -590,12 +503,12 @@ convention is enforced by [`prd/prd-lint.sh`](prd/prd-lint.sh). Copy
 [`prd/template.md`](prd/template.md) for each new PRD; the mechanics and the ID
 scheme are in [`prd/README.md`](prd/README.md), and the decision is
 [ADR-0002](adr/0002-record-product-requirements.md). A project with no external
-customer, or one too small to track requirements, skips this section and the
+customer, or one too small to track requirements, does not need this section and the
 [`prd/`](prd/) directory.
 
 ## Requirements traceability
 
-The kit's documents form one traceable line, from the customer's words to the test
+This repository's documents form one traceable line, from the customer's words to the test
 that proves them:
 
     fact (F-NNNN#n) → requirement (REQ/NFR) → guardrail → ADR → task (‹task-ID›) → test
@@ -630,7 +543,7 @@ exists to prevent.
 context, prompt, reply, or response must have an entry in [`glossary.md`](glossary.md).
 If an abbreviation is not yet defined there, the same turn that uses it adds it — the
 full row: Term, Abbr., Description, and Example. This rule binds **all LLMs and all
-human operators** working in this project; it is not optional, and "the reader will
+human operators** working in this project; it is required, and "the reader will
 know what it means" is not a substitute for the entry. An abbreviation that is used
 but never defined is the exact gap the glossary exists to close, one turn at a time.
 
@@ -746,9 +659,9 @@ that ties a test to what it proves — live in their own section,
 **Four test levels, run cheap-first.** Tests sit on a fixed ladder — **unit**,
 **integration**, **end-to-end (E2E)** — plus the process-level **discipline**
 tests, defined in [`tests/test-levels.md`](tests/test-levels.md). The cheap levels
-— unit and integration, with an optional end-to-end smoke subset — run in the
+— unit and integration, with an end-to-end smoke subset that may be left out — run in the
 [`pre-commit` hook](#git-hooks); the whole ladder runs in
-[CI](#continuous-integration-optional). Each level has its own command placeholder
+[CI](#continuous-integration). Each level has its own command placeholder
 — `‹unit test command›`, `‹integration test command›`, `‹end-to-end test command›`,
 and `‹security test command›` for the parallel security track — with
 `‹test timeout›` bounding a hanging test and `‹test directory›` naming where the
@@ -780,7 +693,7 @@ on stable interfaces — no brittle selectors or timing. The full list is
 [`tests/scaling-checklist.md`](tests/scaling-checklist.md).
 
 **Discipline tests keep the process itself honest.** Beyond tests of the product,
-the kit ships five tests of its own conventions:
+this repository has five tests of its own conventions:
 [`adr/adr-lint.sh`](adr/adr-lint.sh) lints [`adr/`](adr/) against the
 [ADR](#architecture-decision-records) rules — filenames, sequential numbering,
 required sections, the index, and cross-links —
@@ -795,25 +708,25 @@ carries a parseable review record. They read only text, so they
 need no toolchain and can be the project's first tests, before any product code
 exists. The three that lint repo files — ADR, PRD and link — run in the
 [`pre-commit`](#git-hooks) hook and
-in [CI](#continuous-integration-optional); the two that read a forge artifact — the
+in [CI](#continuous-integration); the two that read a forge artifact — the
 PR-link and review-record checks — run in CI only. Add a discipline test
 whenever a convention is worth enforcing automatically rather than by review; wire
 each one into the hook and CI wherever its input is available.
 
-## Continuous integration (optional)
+## Continuous integration
 
 CI runs this whole gate automatically on every change, so it is enforced by the
 forge rather than by memory. It is the **authority**: its checks — the
-[discipline linters](#testing) the templates ship (ADR, PRD, link, PR-link and
+[discipline linters](#testing) the CI files run (ADR, PRD, link, PR-link and
 review-record), their [fixture self-tests](#testing), the
 [test levels](#testing), lint, a security scan, and
 the [commit-format](#commit-messages) check — are the ones you make *required*
 before a merge. The [git hooks](#git-hooks) run the same rules locally for fast feedback.
 
-It is optional because the kit is forge-free. Ready-to-copy templates for GitHub
+CI is not tied to one forge, because the baseline is forge-free. Ready-to-copy templates for GitHub
 Actions and GitLab CI live in [`docs/ci/`](ci/), inert until you copy one into
-place and fill its `‹…›` steps — see [`docs/ci/README.md`](ci/README.md). Turn CI
-on as part of [adapting the kit](#how-to-adapt-this-kit).
+place and set the project's commands in its steps — see [`docs/ci/README.md`](ci/README.md). Turn CI
+on as part of [the setup of this project](#how-this-project-was-set-up).
 
 ## Git hooks
 
@@ -826,7 +739,7 @@ directory holds them, shared by the whole team (unlike the local, untracked
 sh .githooks/install.sh
 ```
 
-It pins `core.hooksPath` to the relative `.githooks`. Two hooks ship with the kit:
+It pins `core.hooksPath` to the relative `.githooks`. Two hooks ship with the baseline:
 
 - **`commit-msg`** — rejects a subject line that does not follow
   [Conventional Commits](#commit-messages). Ready as-is.
@@ -840,11 +753,11 @@ It pins `core.hooksPath` to the relative `.githooks`. Two hooks ship with the ki
   [discipline linters](#testing) — ADR, PRD and link —
   and their fixture self-tests,
   then the `‹lint›`, the fast [test levels](#testing) (`‹unit test command›`, then
-  `‹integration test command›`), and the `‹security scanner›` step you fill in for
-  your stack. Keep it cheap-first; the full suite — the end-to-end level and the
-  full security scan — belongs in [CI](#continuous-integration-optional).
+  `‹integration test command›`), and the `‹security scanner›` step. In this repository they are comments in
+  the hook, so they do not run: see [Which checks run](onboarding-for-engineers.md#which-checks-run). Keep it cheap-first; the full suite — the end-to-end level and the
+  full security scan — belongs in [CI](#continuous-integration).
 
-[`.githooks/README.md`](../.githooks/README.md) has the details and the optional
+[`.githooks/README.md`](../.githooks/README.md) has the details and the
 [`pre-commit` framework](https://pre-commit.com) alternative.
 
 ## Progress indicators for long-running operations
@@ -883,7 +796,7 @@ constraint) — not as a default habit.
 A change lands with the documentation it affects already updated, in the same PR
 — never as a later follow-up task. This covers both the prose docs and the
 comments in the code. If the change leaves a statement, a number, an example, or
-a comment wrong, fixing it is part of the change, not optional tidy-up. Stale
+a comment wrong, fixing it is part of the change, not tidy-up that may be left out. Stale
 documentation is a defect, and the [review rounds](#reviewing-until-findings-decay)
 treat it as one. The same-change rules for the [glossary](#glossary),
 [plain-language summaries](#plain-language-summaries), and
@@ -969,7 +882,7 @@ no expectation but are still summed, so the `Total` is a true total. The figures
 are **recorded, not budgeted** ([ADR-0007](adr/0007-record-task-resource-use.md)):
 they carry no approval number and no cap, and an overrun is not a finding.
 
-Copy this shape. Fill each cell from `‹how the harness reports model, effort,
+Copy this shape. Take each cell from `‹how the harness reports model, effort,
 tokens and elapsed time›`; write `not reported` where it cannot (never a guess),
 and `not applicable` in a human-worked part's model, effort and tokens columns.
 `Elapsed` is wall-clock, so model and human rows compare.
