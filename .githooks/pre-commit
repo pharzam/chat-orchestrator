@@ -1,0 +1,134 @@
+#!/bin/sh
+#
+# pre-commit — run the cheap quality-gate checks before a commit is recorded,
+# so a violation is caught here rather than in CI (docs/ci/) or review.
+#
+# It runs the ADR, PRD and link linters, plus the discipline
+# self-tests, out of the box (docs-only, no toolchain needed). The
+# lint, test-level, and security steps are ‹…› placeholders you fill for your stack —
+# keep them cheap-first (unit before integration before end-to-end), so a failure
+# stops the expensive checks; see docs/tests/test-levels.md. This hook is inert until
+# you run `sh .githooks/install.sh` (see .githooks/README.md).
+#
+# How to adapt: replace each ‹…› with your project's command and uncomment the
+# line. Delete any step you do not use. Run only the fast subset here; the full
+# suite belongs in CI.
+
+set -e
+
+# 0. Hook provenance — is THIS worktree's hook the one running?
+#
+#    core.hooksPath is stored in .git/config, which every worktree SHARES. Set to
+#    an ABSOLUTE path it binds every worktree to one checkout's hooks, so a check
+#    added on a branch does not run on that branch's own commits — the gate reports
+#    success having run something other than what the branch says it runs. Set to a
+#    RELATIVE path, git resolves it per working tree, which is what the install
+#    instruction has always said.
+#
+#    The same fault arrives with core.hooksPath UNSET: git falls back to .git/hooks,
+#    which a linked worktree reaches through the shared COMMON git directory. So this
+#    judges the resolved hooks directory whatever set it, and the message names the
+#    source it actually found rather than a setting the operator may never have set.
+#
+#    `git rev-parse --git-path hooks` is used rather than $0 on purpose: under a
+#    correct install $0 is RELATIVE, so comparing it would need `readlink -f`,
+#    which is not POSIX and differs between BSD and GNU. Git resolves this itself.
+#
+#    This FAILS rather than warns. Every other step here fails; a warning in hook
+#    output nobody reads is the same silent pass this check exists to end. CI runs
+#    each script directly and never through core.hooksPath, so a stop here costs a
+#    round trip, not a landed bug.
+#
+#    Known false positive, and why it is accepted: a hooks directory deliberately
+#    shared across genuinely separate repositories looks identical to the fault.
+#    That is why the message says what to do instead of only refusing.
+_hooks=$(git rev-parse --git-path hooks 2>/dev/null || echo)
+_top=$(git rev-parse --show-toplevel 2>/dev/null || echo)
+if [ -n "$_hooks" ]; then
+	# git returns the value as configured: absolute as given, relative as given.
+	# A RELATIVE value is resolved against the working tree — which is what makes
+	# the relative install correct per worktree — so resolve it the same way here.
+	# Branching on absolute-vs-relative instead would miss `../elsewhere/.githooks`,
+	# which escapes just as surely and is just as foreign.
+	case $_hooks in
+	/*) _cand=$_hooks ;;
+	*)  _cand=${_top:-.}/$_hooks ;;
+	esac
+	# Resolve BOTH through `cd … && pwd -P`. git echoes the configured path back
+	# unresolved but resolves --show-toplevel, so a repo reached through a symlink
+	# (/var vs /private/var on macOS, a symlinked home anywhere) would otherwise
+	# look foreign to ITSELF. `pwd -P` is POSIX; `readlink -f` is not.
+	# The `|| :` inside each substitution is load-bearing under `set -e`: an
+	# assignment takes the substitution's exit status, so a failing `cd` would kill
+	# the hook HERE -- with a bare, unexplained non-zero exit -- before reaching the
+	# "cannot resolve" branch below that exists to explain exactly that case.
+	_hr=$(CDPATH= cd -- "$_cand" 2>/dev/null && pwd -P || :)
+	_tr=$(CDPATH= cd -- "${_top:-.}" 2>/dev/null && pwd -P || :)
+	if [ -z "$_tr" ] || [ -z "$_hr" ]; then
+		# Report, never guess. Saying "fine" here would be a silent pass; saying
+		# "foreign" would be a false alarm. Neither is knowable, so say that.
+		printf 'FAIL  hook provenance: cannot resolve the hooks path (%s) or the working tree (%s).\n' "${_hooks:-unset}" "${_top:-unknown}" >&2
+		printf '      Refusing rather than guessing whether the right hooks are running.\n' >&2
+		exit 1
+	fi
+	case $_hr/ in
+	"$_tr"/*) : ;;
+	*)	# Name where the hooks ACTUALLY came from. With core.hooksPath unset git falls
+		# back to .git/hooks, which a linked worktree reaches through the SHARED common
+		# git directory -- the same fault by another route. Blaming core.hooksPath there
+		# would send the operator to read a setting they never set, in the one check
+		# whose whole job is to say honestly which hooks ran.
+		if [ -n "$(git config core.hooksPath 2>/dev/null || :)" ]; then
+			printf 'FAIL  hook provenance: core.hooksPath resolves to %s, outside this working tree (%s).\n' "$_hr" "$_tr" >&2
+			printf '      Every worktree shares .git/config, so those hooks run here too — and a check\n' >&2
+			printf '      added on this branch does not run on this branch.\n' >&2
+		else
+			printf 'FAIL  hook provenance: these hooks come from %s, outside this working tree (%s).\n' "$_hr" "$_tr" >&2
+			printf '      core.hooksPath is unset, so git fell back to .git/hooks — which every worktree\n' >&2
+			printf '      shares through the common git directory, so a check added on this branch\n' >&2
+			printf '      does not run on this branch either.\n' >&2
+		fi
+		printf '      Fix by running:  sh .githooks/install.sh  (it pins core.hooksPath to the relative .githooks)\n' >&2
+		exit 1 ;;
+	esac
+fi
+
+# 1. ADR discipline — keeps docs/adr/ honest (see docs/adr/adr-lint.sh).
+if [ -f docs/adr/adr-lint.sh ]; then
+	sh docs/adr/adr-lint.sh
+fi
+
+# 1b. PRD discipline — keeps docs/prd/ honest (see docs/prd/prd-lint.sh).
+if [ -f docs/prd/prd-lint.sh ]; then
+	sh docs/prd/prd-lint.sh
+fi
+
+# 1c. Discipline self-tests — run each linter above against its good/bad fixtures,
+#     so the linters themselves are tested (see docs/tests/run-discipline-tests.sh).
+if [ -f docs/tests/run-discipline-tests.sh ]; then
+	sh docs/tests/run-discipline-tests.sh
+fi
+
+# 1f. Link discipline — resolves every in-tree Markdown link and heading anchor,
+#     so a renamed heading or a moved file goes red here rather than leaving a
+#     document pointing at nothing (see docs/links/link-lint.sh).
+if [ -f docs/links/link-lint.sh ]; then
+	sh docs/links/link-lint.sh
+fi
+
+# 2. Lint / format — ‹lint command, e.g. a formatter --check plus a linter›
+# ‹your-linter› || exit 1
+
+# 3. Tests, cheap → expensive — run the fast levels here; leave the slow ones to
+#    CI. Fill each ‹…› with your stack's command (see docs/tests/test-levels.md).
+# ‹unit test command›         || exit 1   # fastest — run on every commit
+# ‹integration test command›  || exit 1   # must be the fast subset; the full set in CI
+# ‹end-to-end test command›   || exit 1   # usually CI only — enable a smoke subset if cheap
+
+# 4. Security scan (staged changes) — the fast subset here: a secret scan, plus a
+#    static-analysis subset where it stays fast; the full set (dependency scan,
+#    static analysis) runs in CI. ‹security test command› drives your
+#    ‹security scanner›. See docs/tests/security-checklist.md.
+# ‹security test command› || exit 1
+
+exit 0
