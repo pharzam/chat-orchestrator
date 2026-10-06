@@ -31,7 +31,7 @@ to run when the resolved path lies outside the tree being committed to; see
 
 | Hook | Runs | Setup |
 |------|------|--------|
-| [`pre-commit`](pre-commit) | A provenance check on where the hooks came from, then the ADR, PRD and link linters and the discipline self-tests. Its lint, test-level and security steps are comments in the file, so they do not run. | A step runs when its line is uncommented, with its command. A value that the setup wrote into a comment does not turn it on; an open command is listed in `docs/setup/open-gaps.tsv`. |
+| [`pre-commit`](pre-commit) | A provenance check on where the hooks came from, then the ADR, PRD and link linters and the discipline self-tests. Its `format check and go vet`, test-level and security steps are comments in the file, so they do not run. | A step runs when its line is uncommented, with its command. A value that the setup wrote into a comment does not turn it on; an open command is listed in `docs/setup/open-gaps.tsv`. |
 | [`commit-msg`](commit-msg) | Conventional-Commits check on the subject line. | Ready as-is. |
 | [`pre-push`](pre-push) | Refuses a direct push to `main` — use a branch and a PR instead. | Change the branch name if your default is not `main`. |
 

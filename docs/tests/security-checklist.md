@@ -6,8 +6,8 @@ security track described in
 [`test-levels.md`](test-levels.md#security-tests-sit-alongside-the-ladder) — a
 parallel track to the test ladder, not a rung on it.
 
-> **How to change this file.** Set the project's real security scanner and
-> security test command everywhere
+> **How to change this file.** Set `‹security scanner›` and
+> `‹security test command›` to the project's real tool and command everywhere
 > they appear here — [`test-levels.md`](test-levels.md) is the one place they are
 > defined, and this file inherits them. Add a project-specific check to
 > [the table](#the-minimum-checks) or [Add your own](#add-your-own) for anything

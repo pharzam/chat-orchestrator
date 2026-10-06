@@ -17,10 +17,7 @@ stays with its task when promoted from Next to Now. Use a `T- plus four random l
 short, stable token per task. Prefer **random** IDs over a sequential counter — a
 counter forces every session to agree on "the next number", so two people (or
 agents) working in parallel both pick the same one and collide in filenames,
-branches, and PRs. A random suffix needs no coordination. `T- plus four random lowercase letters or digits
-here — for example: "T-" plus four characters drawn from 0-9 a-z minus the
-ambiguous i l o u; before using an ID, confirm tasks/<id>.md does not already
-exist."›`
+branches, and PRs. A random suffix needs no coordination. `T- plus four random lowercase letters or digits`
 
 When a Now item is done, move its line to [completed.md](completed.md) — same ID,
 same summary, dated — rather than deleting it or checking it off.

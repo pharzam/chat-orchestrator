@@ -19,6 +19,8 @@ project solves — see the
 
 This repository was set up from the baseline by `layup setup`. The baseline is pinned at one commit in [`setup/armature.pin`](setup/armature.pin), and [ADR-0009](adr/0009-pin-the-baseline.md) records the pin. The steps of the setup that change the tree are commits on the branch `layup-setup`, and the first commit of the branch `layup-records` holds the record of each step and of the source of each value. The rules in this document are the baseline's rules at that pin, changed only where the setup records the change with its evidence.
 
+The values of this repository that have no file of their own: `go test`, how tests run, with the commands of the test levels (`‹unit test command›`, `‹integration test command›`, …) in [`tests/test-levels.md`](tests/test-levels.md); `runs`, where the outputs of a run are kept; `T- plus four random lowercase letters or digits`, how a task is tagged; and `.worktree`, the directory of the worktree of a task. The steps of the hook and of CI: `format check and go vet`, the commands of the test levels (`‹unit test command›`, `‹integration test command›`, `‹end-to-end test command›`), and the `‹security scanner›` scan.
+
 ## Working a task under the quality gate
 
 Every substantive task runs through the same gate. The steps below are the
@@ -139,9 +141,9 @@ repeats it. Model tiering begins only **after** that criterion has been applied 
 the work is known to need a model; it never overturns the preference, and a
 deterministic check still outranks a model of any tier.
 
-Where a model is warranted, route by **tier**. Which concrete models fill each tier
-is the project's to set — the reasoning-tier models and the execution-tier
-models; the baseline names none.
+Where a model is warranted, route by **tier**. Which concrete models serve each tier
+is the project's to set — `‹name your reasoning-tier models›` and
+`‹name your execution-tier models›`; the baseline names none.
 
 | Tier | Class of model | Owns the gate steps that … |
 | ---- | -------------- | -------------------------- |
@@ -751,7 +753,7 @@ It pins `core.hooksPath` to the relative `.githooks`. Two hooks ship with the ba
   [discipline linters](#testing) — ADR, PRD and link —
   and their fixture self-tests,
   then the `format check and go vet`, the fast [test levels](#testing) (`‹unit test command›`, then
-  the integration test command), and the security scanner step. In this repository they are comments in
+  `‹integration test command›`), and the `‹security scanner›` step. In this repository they are comments in
   the hook, so they do not run: see [Which checks run](onboarding-for-engineers.md#which-checks-run). Keep it cheap-first; the full suite — the end-to-end level and the
   full security scan — belongs in [CI](#continuous-integration).
 
@@ -880,7 +882,7 @@ no expectation but are still summed, so the `Total` is a true total. The figures
 are **recorded, not budgeted** ([ADR-0007](adr/0007-record-task-resource-use.md)):
 they carry no approval number and no cap, and an overrun is not a finding.
 
-Copy this shape. Take each cell from what the harness reports for `model, effort,
+Copy this shape. Take each cell from `‹how the harness reports model, effort,
 tokens and elapsed time›`; write `not reported` where it cannot (never a guess),
 and `not applicable` in a human-worked part's model, effort and tokens columns.
 `Elapsed` is wall-clock, so model and human rows compare.
