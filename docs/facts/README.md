@@ -78,5 +78,6 @@ stays, so the history of what the customer said, and when, is never lost.
 | Fact doc | Source | Collected | Status |
 | -------- | ------ | --------- | ------ |
 | [F-0001](F-0001-setup-answers.md) | The answers to the questions of the setup | 2026-10-06 | Raw |
+| [problem-statement-brief.md](problem-statement-brief.md) | The problem statement of the idea owner, from the work area | 2026-10-06 | Raw |
 
 <!-- Add one row per facts document as you collect them. Keep the newest at the bottom. -->
