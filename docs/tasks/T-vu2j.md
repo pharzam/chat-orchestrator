@@ -21,8 +21,10 @@ them. No text of the copy is written by hand. The evidence is [`runs/T-vu2j/evid
   `layup-setup` at `e2b402b`, with the Operator's login and authorization, so that the text holds without a change.
 
 **The binary of the second run, and the review of T-evad** (#6, comment 6014917221). The evidence records the binary.
-If the review of T-evad (pharzam/layup#97) changes fixes 1 to 3, a setup run with the merged binary must give the same
-tree, except the values of `pin.time`. If it does not, this task opens again.
+If the review of T-evad (pharzam/layup#97) changes fixes 1 to 3, a setup run with the merged binary, from the same
+inputs, must give a setup head whose tree equals the tree of `layup-setup-2`, except the values that come from
+`pin.time`: the dates of `armature.pin`, `ADR-0009`, `F-0001`, `F-0002` and the index of facts, and the two hashes of
+`facts.sha256` that cover `F-0001` and `F-0002`. If it does not, this task opens again.
 
 **Open items, not material** (#6, comment 6014917221): the notes of the pass in the evidence, and
 `docs/engineering-discipline.md:22`, which names steps of the hook that are comments and do not run.
