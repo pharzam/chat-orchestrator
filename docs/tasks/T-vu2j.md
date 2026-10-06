@@ -13,12 +13,14 @@ Issue [#6](https://github.com/pharzam/chat-orchestrator/issues/6). The commit `c
   [`facts.sha256`](https://github.com/pharzam/chat-orchestrator/blob/cec749a92cc31a07d67cbf7bc74b07dcd85e84ee/docs/setup/facts.sha256), [`armature.pin`](https://github.com/pharzam/chat-orchestrator/blob/cec749a92cc31a07d67cbf7bc74b07dcd85e84ee/docs/setup/armature.pin) (`date=`) and [`ADR-0009`](https://github.com/pharzam/chat-orchestrator/blob/cec749a92cc31a07d67cbf7bc74b07dcd85e84ee/docs/adr/0009-pin-the-baseline.md) (`Date:`).
   Their record is `setup/record.tsv` at `2a339bb` (`layup-records`, then `layup-records-1` by O-152). From the merge on,
   the immutability rules apply to the versions of the second run.
-- **O-149.** One review round on each frozen head, with the four lenses, inside the cycle cap of 2: a workaround
-  under R4, which two operators approve on #6; #4 is its removal issue.
+- **O-149.** One review round on each frozen head, with the four lenses, inside the cycle cap (2 in the plan review, 3
+  from O-156): a workaround under R4, which two operators approve on #6; #4 is its removal issue.
 - **O-150.** The task adds two files of its own: this file and its evidence.
 - **O-152.** `docs/engineering-discipline.md:20` and `README.md:62` name the branches `layup-setup` and `layup-records`.
   After the merge, `t7-3.sh` makes `layup-records-1` at `2a339bb`, moves `layup-records` to `8bc105c` and makes
   `layup-setup` at `e2b402b`, with the Operator's login and authorization, so that the text holds without a change.
+- **O-156** (pharzam/layup#97, comment 6016940589). Round 3 found three material defects at the cycle cap of 2. The
+  Operator raised the cap to 3: one more fix cycle, test first, and round 4.
 
 **The binary of the second run, and the review of T-evad** (#6, comment 6014917221). The evidence records the binary.
 If the review of T-evad (pharzam/layup#97) changes fixes 1 to 3, a setup run with the merged binary, from the same
