@@ -31,8 +31,7 @@ link, PR-link and review-record linters — are not product tests and do
 [`docs/`](../docs/).
 
 > **How to change this directory.** Add the project's product tests here, mirror the
-> source layout if that is the convention of the project's stack, and change the `test
-> directory›` placeholder in [`docs/tests/test-levels.md`](../docs/tests/test-levels.md)
+> source layout if that is the convention of the project's stack, and change the `tests` placeholder in [`docs/tests/test-levels.md`](../docs/tests/test-levels.md)
 > and the [hook](../.githooks/pre-commit)/[CI](../docs/ci/) steps to point at it.
 > The `.gitkeep` file only exists to keep this empty directory in git — delete it
 > once you add a real test.

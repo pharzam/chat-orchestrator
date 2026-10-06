@@ -5,7 +5,7 @@
 | Fact ID | `F-0001` |
 | Source | The answers of `inputs/answers.tsv` to the questions of S01 and to the gaps of the problem statement |
 | Collected by | `layup setup`, step S04 |
-| Date collected | 2026-10-05 |
+| Date collected | 2026-10-06 |
 | Origin | `inputs/answers.tsv` of the work area |
 | Status | `Raw` |
 

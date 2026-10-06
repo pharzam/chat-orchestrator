@@ -7,7 +7,7 @@ stable as it grows, sitting alongside the [test levels](test-levels.md) — ever
 rule below applies within a level and across all of them.
 
 > **How to change this file.** The rules are the reusable content — keep them.
-> Set the test timeout to the project's real number, and use the
+> Set `‹test timeout›` to the project's real number, and use the
 > checklist as a gate whenever you review or extend the suite. No other change is needed
 > once you have done that.
 
