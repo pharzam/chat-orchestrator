@@ -42,8 +42,17 @@ into LAYUP's `main` yet), and a reader of this repository does not run that setu
 
 ## Verdict
 
-Written at the close-out, after the last review round.
+`not mergeable, findings recorded`: review round 5 (cycle 4) on `003fa2a`. By O-158 the Operator settled its one
+material finding as a known limit, so the task can land: `t7-3.sh` cannot make the merge and the branch moves of O-152
+one step, and a stop between them needs the same push by hand. Note 8 (one header line of `c3.sh`) stays. Rounds 1 to 4
+found 4, 8, 3 and 2 material defects, each fixed test first; the four lenses each round (O-149), cap 4 (O-156, O-157).
 
 ## Resource record (ADR-0007: recorded, not budgeted)
 
-Written at the close-out, after the last review round.
+| Part | Expected tier | Model | Effort | Tokens | Elapsed |
+| ---- | ------------- | ----- | ------ | ------ | ------- |
+| the plan and its reviews | reasoning | Claude Opus 5.5 (the plan, the answers); GPT-6 Sol, Devin CLI (three plan reviews) | max; xhigh | not reported | about 1 h 15 min; 6 min 27 s, 9 min 59 s, 8 min 31 s |
+| the decay review rounds | reasoning | GPT-6 Sol, Devin CLI | xhigh | not reported | 7 min 23 s, 14 min 29 s, 14 min 18 s, 10 min 57 s, 15 min 47 s (rounds 1 to 5) |
+| writing the tests and the code | execution | Claude Opus 5.5 | max | not reported | about 4 h 55 min: the scripts and their tests before round 1, about 3 h; fix cycles 1 to 4, about 20, 35, 50 and 10 min |
+| isolate, guardrails, docs, close-out | `—` | Claude Opus 5.5 | max | not reported | about 1 h 30 min |
+| **Total** | | | | not reported | about 8 h 15 min of wall clock (06:45Z to 15:00Z); the parts overlap, because the reviews ran while the author worked |
