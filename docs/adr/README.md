@@ -135,6 +135,7 @@ record by number here, and let the index table below do the linking.
 | [0006](0006-convene-a-panel-to-generate-options.md) | Convene a panel to generate options | Accepted |
 | [0007](0007-record-task-resource-use.md)        | Record each task's resource use | Accepted |
 | [0008](0008-require-one-reading-in-decision-driving-text.md) | Require one reading in decision-driving text | Accepted |
+| [0009](0009-pin-the-baseline.md) | Pin the baseline | Accepted |
 
 <!-- Add one row per ADR as you write them. Keep the newest at the bottom. -->
 

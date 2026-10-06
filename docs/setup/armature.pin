@@ -1,0 +1,5 @@
+source=https://github.com/pharzam/armature
+commit=a95965534b14b0bf14ad74da0c9a45b5f4aedf88
+tree=8ffb250afd584da8b418bc220fb6d72e802924ce
+method=git clone https://github.com/pharzam/armature, checkout a95965534b14b0bf14ad74da0c9a45b5f4aedf88, .git removed
+date=2026-10-06
